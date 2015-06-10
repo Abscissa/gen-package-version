@@ -1,0 +1,16 @@
+﻿{
+	"name": "genPackageVersion",
+	"description": "Generate a D module with version information automatically-detected from git.",
+	"authors": ["Nick Sabalausky"],
+	"homepage": "https://github.com/Abscissa/genPackageVersion",
+	"license": "zlib/libpng",
+	"targetType": "executable",
+	"targetPath": "bin",
+	"targetName": "genPackageVersion",
+	"sourcePaths": ["src"],
+	"dependencies": {
+		"scriptlike": "==0.7.0"
+	},
+	"preBuildCommands-posix": ["helper/gen_version.sh"],
+	"preBuildCommands-windows": ["helper\\gen_version.cmd"]
+}

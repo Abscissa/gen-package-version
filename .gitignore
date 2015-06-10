@@ -1,0 +1,4 @@
+.dub/
+bin/
+dub.selections.json
+src/genPackageVersion/packageVersion.d
