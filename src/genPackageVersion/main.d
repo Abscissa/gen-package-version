@@ -92,6 +92,7 @@ string outModuleName = "packageVersion";
 string projectSourcePath = null;
 bool useDub = false;
 bool noIgnoreFile = false;
+bool dryRun = false;
 
 // Returns: Should program execution continue?
 bool doGetOpt(ref string[] args)
@@ -106,6 +107,8 @@ bool doGetOpt(ref string[] args)
 			"s|src",          "= VALUE Path to source files. Required unless --dub is used.", &projectSourcePath,
 			"module",         "= VALUE Override the module name. Default: packageVersion", &outModuleName,
 			"no-ignore-file", "        Do not attempt to update .gitignore", &noIgnoreFile,
+			"dry-run",        "        Dry run. Don't actually write or modify any files. Implies --verbose",
+				{ logLevel = LogLevel.verbose; scriptlikeEcho = true; dryRun = true;},
 			//"silent",         "        Silence all non-error output",           { logLevel = LogLevel.silent; },
 			"q|quiet",        "        Quiet mode",                             { logLevel = LogLevel.quiet; },
 			"v|verbose",      "        Verbose mode",                           { logLevel = LogLevel.verbose; scriptlikeEcho = true; },
@@ -160,15 +163,18 @@ void generatePackageVersion()
 	import std.datetime;
 	import std.path : buildPath;
 	
+	// Grab basic info
 	auto versionStr = getVersionStr();
 	logTrace("versionStr: ", versionStr);
 	
 	auto now = Clock.currTime;
 	
+	// Generate dub extras
 	string dubExtras;
 	if(useDub)
 		dubExtras = generateDubExtras(projectSourcePath);
 	
+	// Generate D source code
 	auto dModule =
 `/// Generated at `~now.toString()~`
 /// by genPackageVersion <https://github.com/Abscissa/genPackageVersion>
@@ -182,13 +188,32 @@ enum packageVersion = "`~versionStr~`";
 /// std.datetime.fromISOExtString(packageTimestamp)
 enum packageTimestamp = "`~now.toISOExtString()~`";
 `~dubExtras;
+	logTrace("--------------------------------------");
+	logTrace(dModule);
+	logTrace("--------------------------------------");
 	
-	writeln(dModule);
-	
+	// Determine output filepath
 	auto packagePath = outPackageName.replace(".", dirSeparator);
 	auto modulePath  = outModuleName .replace(".", dirSeparator);
 	auto outPath = buildPath(projectSourcePath, packagePath, modulePath) ~ ".d";
-	writeln("outPath: ", outPath);
+	logTrace("outPath: ", outPath);
+	
+	// Write the file
+	auto outDir = dirName(outPath);
+	if(!std.file.exists(outDir))
+		fail("Output directory doesn't exist: " ~ outDir);
+	
+	if(!std.file.isDir(outDir))
+		fail("Output directory isn't a directory: " ~ outDir);
+
+	logVerbose("Saving to ", outPath);
+	if(!dryRun)
+	{
+		try
+			std.file.write(outPath, dModule);
+		catch(FileException e)
+			fail(e.msg);
+	}
 }
 
 string getVersionStr()
