@@ -124,7 +124,7 @@ bool doGetOpt(ref string[] args)
 		}
 	}
 	catch(GetOptException e)
-		fail(e.msg ~ "\n" ~ usageHint);
+		fail(e.msg, "\n", usageHint);
 	
 	if(showVersion)
 	{
@@ -132,13 +132,11 @@ bool doGetOpt(ref string[] args)
 		return false;
 	}
 	
-	if(args.length != 2 || args[1].empty)
-		fail("Missing package name\n" ~ usageHint);
-	
+	failEnforce(args.length == 2 && !args[1].empty, "Missing package name\n", usageHint);
 	outPackageName = args[1];
 
-	if(!projectSourcePath && !useDub)
-		fail("Missing --src= (Alternatively, you could use --dub to auto-detect --src=)\n" ~ usageHint);
+	failEnforce(projectSourcePath || useDub,
+		"Missing --src= (Alternatively, you could use --dub to auto-detect --src=)\n", usageHint);
 
 	return true;
 }
@@ -200,11 +198,8 @@ enum packageTimestamp = "`~now.toISOExtString()~`";
 	
 	// Write the file
 	auto outDir = dirName(outPath);
-	if(!std.file.exists(outDir))
-		fail("Output directory doesn't exist: " ~ outDir);
-	
-	if(!std.file.isDir(outDir))
-		fail("Output directory isn't a directory: " ~ outDir);
+	failEnforce(std.file.exists(outDir), "Output directory doesn't exist: ", outDir);
+	failEnforce(std.file.isDir(outDir), "Output directory isn't a directory: ", outDir);
 
 	logVerbose("Saving to ", outPath);
 	if(!dryRun)
@@ -244,8 +239,8 @@ string generateDubExtras(ref string srcDir)
 		auto importPaths = packageInfo["importPaths"].array.map!(val => val.str).array();
 		logTrace("importPaths: ", importPaths);
 		
-		if(importPaths.length == 0)
-			fail("Unable to autodetect source directory: Import path not found in 'dub describe'.");
+		failEnforce(importPaths.length > 0,
+			"Unable to autodetect source directory: Import path not found in 'dub describe'.");
 		
 		srcDir = importPaths[0];
 		logNormal("Detected source directory: ", srcDir);
