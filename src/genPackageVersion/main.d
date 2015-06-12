@@ -19,11 +19,8 @@ immutable helpBanner = (
 Version: `~packageVersion~`
 -------------------------------------------------------------------
 Generates a D module with version information automatically-detected
-from git and dub.
-
-This automatically detects your source directory via DUB (if your project's
-dub.json lists more than directory in "importPaths", then this
-will use the first one). Within your main source directory, 
+from git and (optionally) dub. This generated D file is automatically
+added to .gitignore if necessary (unless using --no-ignore-file).
 
 It is recommended to run this via DUB's preGenerateCommands in your dub.json:
 {
@@ -45,8 +42,8 @@ genPackageVersion [options] your.package.name --dub
 
 EXAMPLES:
 genPackageVersion foo.bar --src=source/dir
-	Generates module "foo.bar.packageVersion" in
-	the file: source/dir/foo/bar/packageVersion.d
+	Generates module "foo.bar.packageVersion" in the file:
+		source/dir/foo/bar/packageVersion.d
 	
 	Access the info from your program via:
 
@@ -55,9 +52,11 @@ genPackageVersion foo.bar --src=source/dir
 	writeln("Built on: ", packageTimestamp);
 
 genPackageVersion foo.bar --dub
-	Generates module "foo.bar.packageVersion" in
-	the file: (your_src_dir)/foo/bar/packageVersion.d
-	Where (your_src_dir) is auto-detected via "dub describe".
+	Generates module "foo.bar.packageVersion" in the file:
+		(your_src_dir)/foo/bar/packageVersion.d
+
+	Where (your_src_dir) above is auto-detected via "dub describe".
+	The first path in "importPaths" is assumed to be (your_src_dir).
 	
 	Additional info is available when using --dub:
 
@@ -209,6 +208,10 @@ enum packageTimestamp = "`~now.toISOExtString()~`";
 		catch(FileException e)
 			fail(e.msg);
 	}
+	
+	// Check for .gitignore
+	if(!noIgnoreFile)
+		addToGitIgnore(outPath);
 }
 
 string getVersionStr()
@@ -271,4 +274,58 @@ JSONValue getPackageInfo(JSONValue dubInfo, string packageName)
 	
 	fail("Package '"~packageName~"' not found. Received bad data from 'dub describe'.");
 	assert(0);
+}
+
+void addToGitIgnore(string path)
+{
+	immutable ignoreFileName = ".gitignore";
+	// Normalize to the style of git's homeland, Linux.
+	// Don't worry, this works on Windows just fine.
+	path = path.replace("\\", "/");
+	
+	// Doesn't already exist? Create it.
+	if(!std.file.exists(ignoreFileName))
+	{
+		logVerbose("No existing ", ignoreFileName, " file. Creating it.");
+		if(!dryRun)
+			std.file.write(ignoreFileName, path~"\n");
+
+		return;
+	}
+	
+	// Make sure it's actually a file
+	if(!std.file.isFile(ignoreFileName))
+	{
+		logVerbose("Strange, ", ignoreFileName, " exists but isn't a file. Not updating it.");
+		return; // Not a file? Don't even bother with it.
+	}
+	
+	// Is 'path' already in the ignore file?
+	//import std.string : strip;
+	auto isAlreadyInFile =
+		File(ignoreFileName)
+		.byLine()
+		.map!(std.string.strip)()  // Get rid of any trailing \r byLine might have left us on Windows
+		.map!(a => a.replace("\\", "/"))
+		.canFind(path);
+	
+	// Append 'path' to the ignore file
+	if(!isAlreadyInFile)
+	{
+		logVerbose("Path '", path, "' not found in ", ignoreFileName, " file. Adding it.");
+
+		if(!dryRun)
+		{
+			auto file = File(ignoreFileName, "a+");
+			scope(exit) file.close();
+	
+			// Everything on Windows handles \n just fine, plus git is
+			// heavily Linux-oriented so \n is more appropriate.
+			file.rawWrite("\n"); // Just in case there isn't already a trailing newline
+			file.rawWrite(path);
+			file.rawWrite("\n");
+		}
+	}
+	else
+		logVerbose("Path '", path, "' is already found in ", ignoreFileName, " file.");
 }
