@@ -1,5 +1,5 @@
-﻿genPackageVersion - ChangeLog
-=============================
+﻿gen-package-version - ChangeLog
+===============================
 
 (Dates below are YYYY/MM/DD)
 

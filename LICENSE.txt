@@ -1,5 +1,5 @@
-genPackageVersion is licensed under The zlib/libpng License:
-------------------------------------------------------------
+gen-package-version is licensed under The zlib/libpng License:
+--------------------------------------------------------------
 
 Copyright (c) 2015 Nick Sabalausky
 

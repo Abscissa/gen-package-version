@@ -13,33 +13,28 @@ import scriptlike.only;
 import genPackageVersion.packageVersion;
 
 immutable helpBanner = (
-`genPackageVersion - <https://github.com/Abscissa/genPackageVersion>
+`gen-package-version - <https://github.com/Abscissa/gen-package-version>
 Version: `~packageVersion~`
--------------------------------------------------------------------
+---------------------------------------------------------------------
 Generates a D module with version information automatically-detected
 from git and (optionally) dub. This generated D file is automatically
 added to .gitignore if necessary (unless using --no-ignore-file).
 
-It is recommended to run this via DUB's preGenerateCommands in your dub.json:
-{
-	"name": "my-project",
+It is recommended to run this via DUB's preGenerateCommands by adding the
+following lines to your project's dub.json:
+
 	"dependencies": {
-		"genPackageVersion": "~>0.9.0"
+		"gen-package-version": "~>0.9.0"
 	},
-	"preGenerateCommands-posix": [
-		"$GENPACKAGEVERSION_PACKAGE_DIR/bin/genPackageVersion --src=source"
-	]
-	"preGenerateCommands-windows": [
-		"$GENPACKAGEVERSION_PACKAGE_DIR\bin\genPackageVersion --src=source"
-	]
-}
+	"preGenerateCommands":
+		["dub run gen-package-version -- your.package.name --src=path/to/src"],
 
 USAGE:
-genPackageVersion [options] your.package.name --src=path/to/src
-genPackageVersion [options] your.package.name --dub
+gen-package-version [options] your.package.name --src=path/to/src
+gen-package-version [options] your.package.name --dub
 
 EXAMPLES:
-genPackageVersion foo.bar --src=source/dir
+gen-package-version foo.bar --src=source/dir
 	Generates module "foo.bar.packageVersion" in the file:
 		source/dir/foo/bar/packageVersion.d
 	
@@ -49,7 +44,7 @@ genPackageVersion foo.bar --src=source/dir
 	writeln("Version: ", packageVersion);
 	writeln("Built on: ", packageTimestamp);
 
-genPackageVersion foo.bar --dub
+gen-package-version foo.bar --dub
 	Generates module "foo.bar.packageVersion" in the file:
 		(your_src_dir)/foo/bar/packageVersion.d
 
@@ -94,7 +89,7 @@ bool dryRun = false;
 // Returns: Should program execution continue?
 bool doGetOpt(ref string[] args)
 {
-	immutable usageHint = "For usage, run: genPackageVersion --help";
+	immutable usageHint = "For usage, run: gen-package-version --help";
 	bool showVersion;
 	
 	try
@@ -173,7 +168,7 @@ void generatePackageVersion()
 	// Generate D source code
 	auto dModule =
 `/// Generated at `~now.toString()~`
-/// by genPackageVersion <https://github.com/Abscissa/genPackageVersion>
+/// by gen-package-version <https://github.com/Abscissa/gen-package-version>
 module `~outPackageName~`.`~outModuleName~`;
 
 /// Version of this package, obtained via "git describe"
