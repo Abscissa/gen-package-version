@@ -167,17 +167,23 @@ void generatePackageVersion()
 	
 	// Generate D source code
 	auto dModule =
-`/// Generated at `~now.toString()~`
-/// by gen-package-version `~packageVersion~`
-/// <https://github.com/Abscissa/gen-package-version>
+`/++
+Generated at `~now.toString()~`
+by gen-package-version `~packageVersion~`
+<https://github.com/Abscissa/gen-package-version>
++/
 module `~outPackageName~`.`~outModuleName~`;
 
-/// Version of this package, obtained via "git describe"
+/++
+Version of this package, obtained via "git describe"
++/
 enum packageVersion = "`~versionStr~`";
 
-/// Timestamp of when this packageVersion module was generated,
-/// as an ISO Ext string. Get a SysTime from this via:
-/// std.datetime.fromISOExtString(packageTimestamp)
+/++
+Timestamp of when this packageVersion module was generated,
+as an ISO Ext string. Get a SysTime from this via:
+std.datetime.fromISOExtString(packageTimestamp)
++/
 enum packageTimestamp = "`~now.toISOExtString()~`";
 `~dubExtras;
 	logTrace("--------------------------------------");
@@ -246,15 +252,19 @@ string generateDubExtras(ref string srcDir)
 	
 	return
 `
-/// DUB package name of this project.
-/// Ie, dub.json's "name" field.
+/++
+DUB package name of this project.
+Ie, dub.json's "name" field.
++/
 enum packageName = "`~rootPackageName~`";
 
-/// Name of this project's target binary, minus extensions and prefixes.
-/// Ie, dub.json's "targetName" field.
-///
-/// Note that depending on your needs, it may be better to
-/// use std.file.thisExePath()
+/++
+Name of this project's target binary, minus extensions and prefixes.
+Ie, dub.json's "targetName" field.
+
+Note that depending on your needs, it may be better to
+use std.file.thisExePath()
++/
 enum packageTargetName = "`~targetName~`";
 `;
 }
