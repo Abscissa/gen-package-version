@@ -20,7 +20,7 @@ First, add the following to your project's [dub.json](http://code.dlang.org/gett
 		"gen-package-version": "~>0.9.2"
 	},
 	"preGenerateCommands":
-		["dub run gen-package-version -- your.package.name --src=path/to/src"]
+		["cd $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"]
 }
 ```
 
