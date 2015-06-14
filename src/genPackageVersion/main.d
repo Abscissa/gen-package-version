@@ -168,7 +168,8 @@ void generatePackageVersion()
 	// Generate D source code
 	auto dModule =
 `/// Generated at `~now.toString()~`
-/// by gen-package-version <https://github.com/Abscissa/gen-package-version>
+/// by gen-package-version `~packageVersion~`
+/// <https://github.com/Abscissa/gen-package-version>
 module `~outPackageName~`.`~outModuleName~`;
 
 /// Version of this package, obtained via "git describe"
