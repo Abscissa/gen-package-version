@@ -12,7 +12,7 @@ To Use:
 
 It's recommended to use [dub](http://code.dlang.org/getting_started) ([get dub here](http://code.dlang.org/download)). But if you wish, you can also forgo dub entirely (see the next section below).
 
-Add the following to your project's [dub.json](http://code.dlang.org/getting_started):
+First, add the following to your project's [dub.json](http://code.dlang.org/getting_started):
 
 ```json
 {
@@ -90,7 +90,7 @@ $ dub build gen-package-version
 # dub run gen-package-version -- your.package.name --src=path/to/src
 ```
 
-Download and compile with no dub needed at all:
+Or download and compile with no dub needed at all:
 ```bash
 $ git clone https://github.com/Abscissa/gen-package-version.git
 $ cd gen-package-version

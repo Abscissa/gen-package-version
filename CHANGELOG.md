@@ -3,6 +3,6 @@
 
 (Dates below are YYYY/MM/DD)
 
-v0.9.0 - 2015/TBD/TBD
+v0.9.0 - 2015/06/14
 -------------------
-- **New:** Initial version.
+- **New:** Initial release.
