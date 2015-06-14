@@ -13,9 +13,9 @@ import scriptlike.only;
 import genPackageVersion.packageVersion;
 
 immutable helpBanner = (
-`gen-package-version - <https://github.com/Abscissa/gen-package-version>
-Version: `~packageVersion~`
----------------------------------------------------------------------
+`gen-package-version `~packageVersion~`
+<https://github.com/Abscissa/gen-package-version>
+-------------------------------------------------
 Generates a D module with version information automatically-detected
 from git and (optionally) dub. This generated D file is automatically
 added to .gitignore if necessary (unless using --no-ignore-file).
