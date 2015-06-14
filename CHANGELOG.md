@@ -3,6 +3,10 @@
 
 (Dates below are YYYY/MM/DD)
 
+v0.9.2 - 2015/06/14
+-------------------
+- **Fixed:** The old recommeded "preGenerateCommands" led to problems (project dependencies that use gen-package-version would run it from the wrong directory).
+
 v0.9.1 - 2015/06/14
 -------------------
 - **Fixed:** ```helper/gen_version.sh``` isn't set as executable when checked out through dub.

@@ -24,10 +24,10 @@ It is recommended to run this via DUB's preGenerateCommands by adding the
 following lines to your project's dub.json:
 
 	"dependencies": {
-		"gen-package-version": "~>0.9.1"
+		"gen-package-version": "~>0.9.2"
 	},
 	"preGenerateCommands":
-		["dub run gen-package-version -- your.package.name --src=path/to/src"],
+		["cd $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"],
 
 USAGE:
 gen-package-version [options] your.package.name --src=path/to/src
