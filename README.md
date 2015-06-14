@@ -10,34 +10,31 @@ Even better, all your in-between builds will automatically have *their own* git-
 To Use:
 -------
 
-Insert the following in your project's [dub.json](http://code.dlang.org/getting_started):
+Add the following to your project's [dub.json](http://code.dlang.org/getting_started):
 
 ```json
 {
-	...
 	"dependencies": {
-		...
-		"gen-package-version": "~>0.9.0",
+		"gen-package-version": "~>0.9.0"
 	},
 	"preGenerateCommands":
-		["dub run gen-package-version -- your.package.name --src=path/to/src"],
-	...
+		["dub run gen-package-version -- your.package.name --src=path/to/src"]
 }
 ```
 
-Replace ```path/to/src``` with wherever your project's sources are (most likely ```src``` or ```source```).
+Replace ```path/to/src``` with the path to your project's sources (most likely ```src``` or ```source```).
 
-Replace ```your.package.name``` with whatever the main D package of your project is named (ex: ```std```, ```deimos```, ```coolsoft.coolproduct.component1```, etc...).
+Replace ```your.package.name``` with the name of your project's D package (ex: ```std```, ```deimos```, ```coolsoft.coolproduct.component1```, etc...).
 
-Optionally, you can replace ```--src=path/to/src``` with ```--dub``` and gen-package-version will use dub (via ```dub describe```) to automatically detect your source path and add some extra info in the packageVersion module it generates. More optiona are available (see "Help Screen" section below).
+Optionally, you can replace ```--src=path/to/src``` with ```--dub```. Then, gen-package-version will use dub (via ```dub describe```) to automatically detect your source path and add some extra info in the packageVersion module it generates. More options are also available (see "Help Screen" below).
 
-Make sure your project is [tagged](https://git-scm.com/book/en/v2/Git-Basics-Tagging) with a version number (it must be a git "annotated" tag, ie a tag with a message, doesn't matter what the message is). Example:
+Finally, make sure your project is [tagged](https://git-scm.com/book/en/v2/Git-Basics-Tagging) with a version number (it must be a git "annotated" tag, ie a tag with a message, doesn't matter what the message is). Example:
 
 ```bash
 $ git tag -a v1.2.0 -m 'This is version v1.2.0'
 ```
 
-That's it. Now your program will always be able to access it's own version number (auto-detected from git) and build timestamp:
+That's it. Now your program will always be able to access its own version number (auto-detected from git) and build timestamp:
 
 ```d
 module your.package.name.main;
@@ -55,9 +52,9 @@ void main()
 }
 ```
 
-Everytime you tag (annotated tag) a new release, your program will automatically know it's new version number. And builds from between releases will be easily distinguished.
+Every time you tag (remember, annotated tag) a new release, your program will automatically know its new version number! Even builds from between releases will be easily distinguished.
 
-If your project is a library, your library's *users* can also query the version of your lib:
+If your project is a library, your *library's users* can also query the version of your lib:
 
 ```d
 module myApp.main;
@@ -75,7 +72,7 @@ void main()
 }
 ```
 
-By default, gen-package-version automatically adds the generated "packageVersion.d" file to your .gitignore (or creates .gitignore if there isn't one). This helps ensure the file's changes don't clutter your project's pull requests. If you'd rather gen-package-version left your .gitignore file alone, just include the ```--no-ignore-file``` flag.
+By default, gen-package-version automatically adds the generated ```packageVersion.d``` file to your ```.gitignore``` (or creates it if you don't have one). This helps ensure the file's changes don't clutter your project's pull requests. If you'd rather gen-package-version left your ```.gitignore``` file alone, just include the ```--no-ignore-file``` flag.
 
 Help Screen
 -----------
