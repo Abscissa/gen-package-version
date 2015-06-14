@@ -11,6 +11,6 @@
 	"dependencies": {
 		"scriptlike": "~>0.8.0"
 	},
-	"preBuildCommands-posix": ["helper/gen_version.sh"],
-	"preBuildCommands-windows": ["helper\\gen_version.cmd"]
+	"preBuildCommands-posix": ["cd $PACKAGE_DIR && helper/gen_version.sh"],
+	"preBuildCommands-windows": ["cd $PACKAGE_DIR && helper\\gen_version.cmd"]
 }
