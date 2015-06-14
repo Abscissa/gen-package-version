@@ -10,6 +10,8 @@ Even better, all your in-between builds will automatically have *their own* git-
 To Use:
 -------
 
+It's recommended to use [dub](http://code.dlang.org/getting_started) ([get dub here](http://code.dlang.org/download)). But if you wish, you can also forgo dub entirely (see the next section below).
+
 Add the following to your project's [dub.json](http://code.dlang.org/getting_started):
 
 ```json
@@ -73,6 +75,37 @@ void main()
 ```
 
 By default, gen-package-version automatically adds the generated ```packageVersion.d``` file to your ```.gitignore``` (or creates it if you don't have one). This helps ensure the file's changes don't clutter your project's pull requests. If you'd rather gen-package-version left your ```.gitignore``` file alone, just include the ```--no-ignore-file``` flag.
+
+Your project isn't built with dub?
+----------------------------------
+
+No prob! Just download and compile gen-package-version, then run it from your buildscript (or in your IDE's "Project Pre-Build Steps").
+
+Download and compile using dub ([get dub](http://code.dlang.org/download)):
+```bash
+$ dub fetch gen-package-version
+$ dub build gen-package-version
+
+# Add this to your project's buildscript:
+# dub run gen-package-version -- your.package.name --src=path/to/src
+```
+
+Download and compile with no dub needed at all:
+```bash
+$ git clone https://github.com/Abscissa/gen-package-version.git
+$ cd gen-package-version
+$ git checkout v0.9.0  # Or newer
+
+$ git clone https://github.com/Abscissa/scriptlike.git
+$ cd scriptlike
+$ git checkout v0.8.0  # Or newer
+$ cd ..
+
+$ rdmd --build-only -ofbin/gen-package-version -Isrc/ -Iscriptlike/src src/genPackageVersion/main.d
+
+# Add this to your project's buildscript:
+# [path/to/gen-package-version/]bin/gen-package-version your.package.name --src=path/to/src
+```
 
 Help Screen
 -----------
