@@ -1,7 +1,9 @@
 gen-package-version
 ===================
 
-Generate a [D](http://dlang.org) module with version and timestamp information automatically-detected from git.
+Automatically generate a [D](http://dlang.org) module with version and timestamp information (detected from git) every time your program (or library) is built.
+
+Even better, all your in-between builds will automatically have *their own* git-generated version number including the git commit hash. For example: ```v1.2.0-1-g78f5cf9```. So there's never any confusion as to which "version" of v1.2.0 you're running!
 
 [ [Changelog](https://github.com/Abscissa/gen-package-version/blob/master/CHANGELOG.md) ]
 
@@ -19,13 +21,17 @@ Insert the following in your project's [dub.json](http://code.dlang.org/getting_
 	},
 	"preGenerateCommands":
 		["dub run gen-package-version -- your.package.name --src=path/to/src"],
+	...
+}
 ```
 
-...replacing ```path/to/src``` with wherever your project's sources are (most likely ```src``` or ```source```), and  ```your.package.name``` with whatever the main D package of your project is named (ex: "std", "deimos", "coolsoft.coolproduct.component1", etc...).
+Replace ```path/to/src``` with wherever your project's sources are (most likely ```src``` or ```source```).
+
+Replace ```your.package.name``` with whatever the main D package of your project is named (ex: ```std```, ```deimos```, ```coolsoft.coolproduct.component1```, etc...).
 
 Optionally, you can replace ```--src=path/to/src``` with ```--dub``` and gen-package-version will use dub (via ```dub describe```) to automatically detect your source path and add some extra info in the packageVersion module it generates. More optiona are available (see "Help Screen" section below).
 
-Then, make sure your project is [tagged](https://git-scm.com/book/en/v2/Git-Basics-Taggingsrc=path/to/src) with a version number (it must be a git "annotated" tag, ie a tag with a message, doesn't matter what the message is). Ex:
+Make sure your project is [tagged](https://git-scm.com/book/en/v2/Git-Basics-Tagging) with a version number (it must be a git "annotated" tag, ie a tag with a message, doesn't matter what the message is). Example:
 
 ```bash
 $ git tag -a v1.2.0 -m 'This is version v1.2.0'
@@ -34,7 +40,7 @@ $ git tag -a v1.2.0 -m 'This is version v1.2.0'
 That's it. Now your program will always be able to access it's own version number (auto-detected from git) and build timestamp:
 
 ```d
-module your.package.name;
+module your.package.name.main;
 
 import std.stdio;
 import your.package.name.packageVersion;
@@ -46,6 +52,26 @@ void main()
 	
 	// Only works of you used "--dub"
 	//writeln(`The "name" field in my dub.json is: `, packageName);
+}
+```
+
+Everytime you tag (annotated tag) a new release, your program will automatically know it's new version number. And builds from between releases will be easily distinguished.
+
+If your project is a library, your library's *users* can also query the version of your lib:
+
+```d
+module myApp.main;
+
+import std.stdio;
+import myApp.packageVersion;
+static import coolLib.packageVersion;
+
+void main()
+{
+	writeln("My App ", packageVersion, "(@ ", packageTimestamp, ")");
+
+	writeln("Using coolLib ", coolLib.packageVersion.packageVersion);
+	writeln("  coolLib built @", coolLib.packageVersion.packageTimestamp);
 }
 ```
 
