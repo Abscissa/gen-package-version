@@ -1,9 +1,9 @@
 gen-package-version
 ===================
 
-Automatically generate a [D](http://dlang.org) module with version and timestamp information (detected from git) every time your program (or library) is built.
+Automatically generate a [D](http://dlang.org) module with version and timestamp information (detected from git) every time your program or library is built.
 
-Even better, all your in-between builds will automatically have *their own* git-generated version number including the git commit hash. For example: ```v1.2.0-1-g78f5cf9```. So there's never any confusion as to which "version" of v1.2.0 you're running!
+Even better, all your in-between builds will automatically have *their own* git-generated version number, including the git commit hash (for example: ```v1.2.0-1-g78f5cf9```). So there's never any confusion as to which "version" of v1.2.0 you're running!
 
 [ [Changelog](https://github.com/Abscissa/gen-package-version/blob/master/CHANGELOG.md) ]
 
@@ -28,7 +28,7 @@ Replace ```your.package.name``` with the name of your project's D package (ex: `
 
 Optionally, you can replace ```--src=path/to/src``` with ```--dub```. Then, gen-package-version will use dub (via ```dub describe```) to automatically detect your source path and add some extra info in the packageVersion module it generates. More options are also available (see "Help Screen" below).
 
-Finally, make sure your project is [tagged](https://git-scm.com/book/en/v2/Git-Basics-Tagging) with a version number (it must be a git "annotated" tag, ie a tag with a message, doesn't matter what the message is). Example:
+Finally, make sure your project is [tagged](https://git-scm.com/book/en/v2/Git-Basics-Tagging) with a version number (it must be a git "annotated" tag, ie a tag with a message - doesn't matter what the message is). Example:
 
 ```bash
 $ git tag -a v1.2.0 -m 'This is version v1.2.0'
@@ -52,7 +52,7 @@ void main()
 }
 ```
 
-Every time you tag (remember, annotated tag) a new release, your program will automatically know its new version number! Even builds from between releases will be easily distinguished.
+Every time you tag a new release (remember, annotated tag), your program will automatically know its new version number! Even builds from between releases will be easily distinguished.
 
 If your project is a library, your *library's users* can also query the version of your lib:
 
