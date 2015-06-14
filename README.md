@@ -17,7 +17,7 @@ First, add the following to your project's [dub.json](http://code.dlang.org/gett
 ```json
 {
 	"dependencies": {
-		"gen-package-version": "~>0.9.0"
+		"gen-package-version": "~>0.9.1"
 	},
 	"preGenerateCommands":
 		["dub run gen-package-version -- your.package.name --src=path/to/src"]
@@ -94,7 +94,7 @@ Or download and compile with no dub needed at all:
 ```bash
 $ git clone https://github.com/Abscissa/gen-package-version.git
 $ cd gen-package-version
-$ git checkout v0.9.0  # Or newer
+$ git checkout v0.9.1  # Or newer
 
 $ git clone https://github.com/Abscissa/scriptlike.git
 $ cd scriptlike
@@ -112,7 +112,7 @@ Help Screen
 View this help screen with ```dub run gen-package-version -- --help``` or ```gen-package-version --help```:
 
 ```
-gen-package-version v0.9.0
+gen-package-version v0.9.1
 <https://github.com/Abscissa/gen-package-version>
 -------------------------------------------------
 Generates a D module with version information automatically-detected
@@ -123,7 +123,7 @@ It is recommended to run this via DUB's preGenerateCommands by adding the
 following lines to your project's dub.json:
 
     "dependencies": {
-        "gen-package-version": "~>0.9.0"
+        "gen-package-version": "~>0.9.1"
     },
     "preGenerateCommands":
         ["dub run gen-package-version -- your.package.name --src=path/to/src"],
