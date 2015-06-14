@@ -214,7 +214,7 @@ string getVersionStr()
 
 	auto result = tryRunCollect("git describe");
 	if(result.status)
-		return "unknown";
+		return "unknown-ver";
 	else
 		return result.output.strip();
 }
