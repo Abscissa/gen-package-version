@@ -2,15 +2,13 @@ module genPackageVersion.main;
 
 import std.algorithm;
 import std.array;
-import std.file;
 import std.getopt;
 import std.json;
 import std.process;
 import std.regex;
 import std.stdio;
 
-import scriptlike.fail;
-import scriptlike.path;
+import scriptlike.only;
 
 import genPackageVersion.packageVersion;
 
@@ -158,7 +156,8 @@ void main(string[] args)
 void generatePackageVersion()
 {
 	import std.datetime;
-	import std.path : buildPath;
+	import std.file : exists;
+	import std.path : buildPath, dirName;
 	
 	// Grab basic info
 	auto versionStr = getVersionStr();
@@ -196,8 +195,8 @@ enum packageTimestamp = "`~now.toISOExtString()~`";
 	logTrace("outPath: ", outPath);
 	
 	// Write the file
-	auto outDir = dirName(outPath);
-	failEnforce(std.file.exists(outDir), "Output directory doesn't exist: ", outDir);
+	auto outDir = std.path.dirName(outPath);
+	failEnforce(exists(outDir), "Output directory doesn't exist: ", outDir);
 	failEnforce(std.file.isDir(outDir), "Output directory isn't a directory: ", outDir);
 
 	logVerbose("Saving to ", outPath);

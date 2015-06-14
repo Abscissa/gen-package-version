@@ -9,7 +9,7 @@
 	"targetName": "genPackageVersion",
 	"sourcePaths": ["src"],
 	"dependencies": {
-		"scriptlike": "==0.7.0"
+		"scriptlike": "~>0.8.0"
 	},
 	"preBuildCommands-posix": ["helper/gen_version.sh"],
 	"preBuildCommands-windows": ["helper\\gen_version.cmd"]
