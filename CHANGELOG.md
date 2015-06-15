@@ -3,6 +3,11 @@
 
 (Dates below are YYYY/MM/DD)
 
+v0.9.3 - TBD
+-------------------
+- **Enhancement:** If detecting the version number via git fails, attempt to detect it via the currect directory name (ex, ```~/.dub/packages/[project-name]-[version-tag]```).
+- **Fixed:** Fails to detect version number for packages fetched by dub (since they lack ```.git```).
+
 v0.9.2 - 2015/06/14
 -------------------
 - **Fixed:** The old recommended "preGenerateCommands" led to problems (project dependencies that use gen-package-version would run it from the wrong directory).

@@ -55,6 +55,10 @@ gen-package-version foo.bar --dub
 
 	writeln("This program's name is ", packageName);
 
+Note that even if --dub isn't used, gen-package-version might still run dub
+anyway, if "git describe" fails (for example, if the package was downloaded
+via dub).
+
 OPTIONS:`).replace("\t", "    ");
 
 enum LogLevel
@@ -215,22 +219,90 @@ enum packageTimestamp = "`~now.toISOExtString()~`";
 		addToGitIgnore(outPath);
 }
 
+// Obtain the version
 string getVersionStr()
+{
+	string ver;
+
+	// Try "git describe"
+	ver = getVersionStrGit();
+
+	// Try checking the name of the directory (ex, for packages fetched by dub)
+	if(ver.empty)
+		ver = getVersionStrInferFromDir();
+	
+	// Found nothing?
+	if(ver.empty)
+		ver = "unknown-ver";
+	
+	return ver;
+}
+
+// Attempt to get the version from git
+string getVersionStrGit()
 {
 	import std.string : strip;
 
 	auto result = tryRunCollect("git describe");
-	if(result.status)
-		return "unknown-ver";
-	else
+	if(!result.status)
 		return result.output.strip();
+
+	return null;
+}
+
+// Attempt to get the version by inferring from current directory name.
+string getVersionStrInferFromDir()
+{
+	import std.string : chompPrefix, isNumeric;
+	import std.file : getcwd, baseName;
+	
+	JSONValue jsonRoot;
+	try
+		jsonRoot = getPackageJsonInfo();
+	catch(Exception e) // If "dub describe" failed
+		return null;
+	
+	auto rootPackageName = jsonRoot["rootPackage"].str;
+	auto currDir = getcwd().baseName();
+	logTrace("rootPackageName: ", rootPackageName);
+	logTrace("currDir: ", currDir);
+	
+	auto prefix = rootPackageName ~ "-";
+	if(currDir.startsWith(prefix))
+	{
+		auto versionPortion = currDir.chompPrefix(prefix);
+		if(!versionPortion.empty)
+		{
+			if(isNumeric(versionPortion[0..1]))
+				return "v"~versionPortion;
+			else
+				return versionPortion;
+		}
+	}
+	
+	return null;
+}
+
+// Obtains package info via "dub describe"
+JSONValue getPackageJsonInfo()
+{
+	static isCached = false;
+	static JSONValue jsonRoot;
+	
+	if(!isCached)
+	{
+		jsonRoot = parseJSON( runCollect("dub describe") );
+		isCached = true;
+	}
+	
+	return jsonRoot;
 }
 
 // Auto-detects srcDir if srcDir doesn't already have a value.
 // Returns D source code to be appended to the output file.
 string generateDubExtras(ref string srcDir)
 {
-	auto jsonRoot = parseJSON( runCollect("dub describe") );
+	auto jsonRoot = getPackageJsonInfo();
 	auto rootPackageName = jsonRoot["rootPackage"].str;
 	logTrace("rootPackageName: ", rootPackageName);
 	
