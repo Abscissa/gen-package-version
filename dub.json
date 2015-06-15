@@ -11,6 +11,8 @@
 	"dependencies": {
 		"scriptlike": "~>0.8.0"
 	},
-	"preBuildCommands-posix": ["cd $PACKAGE_DIR && chmod +x helper/gen_version.sh && helper/gen_version.sh"],
-	"preBuildCommands-windows": ["cd $PACKAGE_DIR && helper\\gen_version.cmd"]
+	"preGenerateCommands-posix":
+		["cd $PACKAGE_DIR && chmod +x helper/bootstrap.sh && helper/bootstrap.sh $SCRIPTLIKE_PACKAGE_DIR"],
+	"preGenerateCommands-windows":
+		["cd $PACKAGE_DIR && helper\\bootstrap.cmd $SCRIPTLIKE_PACKAGE_DIR"]
 }

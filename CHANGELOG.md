@@ -7,6 +7,7 @@ v0.9.3 - TBD
 -------------------
 - **Enhancement:** If detecting the version number via git fails, attempt to detect it via the currect directory name (ex, ```~/.dub/packages/[project-name]-[version-tag]```).
 - **Enhancement:** Don't bother running git if there's no ```.git``` directory.
+- **Enhancement:** Bootstraps itself, so gen-package-version itself enjoys the following fix:
 - **Fixed:** Fails to detect version number for packages fetched by dub (since they lack ```.git```).
 
 v0.9.2 - 2015/06/14
