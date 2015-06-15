@@ -243,6 +243,10 @@ string getVersionStrGit()
 {
 	import std.string : strip;
 
+	// Don't bother running git if it's not even a git working directory
+	if(!existsAsDir(".git"))
+		return null;
+	
 	auto result = tryRunCollect("git describe");
 	if(!result.status)
 		return result.output.strip();
