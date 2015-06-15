@@ -19,7 +19,7 @@ First, add the following to your project's [dub.json](http://code.dlang.org/gett
 ```json
 {
 	"dependencies": {
-		"gen-package-version": "~>0.9.2"
+		"gen-package-version": "~>0.9.3"
 	},
 	"preGenerateCommands":
 		["cd $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"]
@@ -96,7 +96,7 @@ Or download and compile with no dub needed at all:
 ```bash
 $ git clone https://github.com/Abscissa/gen-package-version.git
 $ cd gen-package-version
-$ git checkout v0.9.2  # Or newer
+$ git checkout v0.9.3  # Or newer
 
 $ git clone https://github.com/Abscissa/scriptlike.git
 $ cd scriptlike
@@ -114,7 +114,7 @@ Help Screen
 View this help screen with ```dub run gen-package-version -- --help``` or ```gen-package-version --help```:
 
 ```
-gen-package-version v0.9.2
+gen-package-version v0.9.3
 <https://github.com/Abscissa/gen-package-version>
 -------------------------------------------------
 Generates a D module with version information automatically-detected
@@ -125,7 +125,7 @@ It is recommended to run this via DUB's preGenerateCommands by adding the
 following lines to your project's dub.json:
 
     "dependencies": {
-        "gen-package-version": "~>0.9.2"
+        "gen-package-version": "~>0.9.3"
     },
     "preGenerateCommands":
         ["cd $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"],
@@ -156,6 +156,10 @@ gen-package-version foo.bar --dub
 
     writeln("This program's name is ", packageName);
 
+Note that even if --dub isn't used, gen-package-version might still run dub
+anyway, if "git describe" fails (for example, if the package was downloaded
+via dub).
+
 OPTIONS:
               --dub         Use dub. May be slightly slower, but allows --src to be auto-detected, and adds extra info to the generated module.
 -s            --src = VALUE Path to source files. Required unless --dub is used.
@@ -166,5 +170,4 @@ OPTIONS:
 -v        --verbose         Verbose mode
             --trace         Extremely verbose mode (for debugging)
           --version         Show this program's version number and exit
--h           --help This help information.
 ```

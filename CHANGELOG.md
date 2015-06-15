@@ -3,7 +3,7 @@
 
 (Dates below are YYYY/MM/DD)
 
-v0.9.3 - TBD
+v0.9.3 - 2015/06/15
 -------------------
 - **Enhancement:** If detecting the version number via git fails, attempt to detect it via the currect directory name (ex, ```~/.dub/packages/[project-name]-[version-tag]```).
 - **Enhancement:** Don't bother running git if there's no ```.git``` directory.
