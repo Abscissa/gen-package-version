@@ -17,14 +17,14 @@ immutable helpBanner = (
 <https://github.com/Abscissa/gen-package-version>
 -------------------------------------------------
 Generates a D module with version information automatically-detected
-from git and (optionally) dub. This generated D file is automatically
-added to .gitignore if necessary (unless using --no-ignore-file).
+from git or hg and (optionally) dub. This generated D file is automatically
+added to .gitignore/.hgignore if necessary (unless using --no-ignore-file).
 
 It is recommended to run this via DUB's preGenerateCommands by adding the
 following lines to your project's dub.json:
 
 	"dependencies": {
-		"gen-package-version": "~>0.9.3"
+		"gen-package-version": "~>0.9.4"
 	},
 	"preGenerateCommands":
 		["cd $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"],
@@ -56,8 +56,9 @@ gen-package-version foo.bar --dub
 	writeln("This program's name is ", packageName);
 
 Note that even if --dub isn't used, gen-package-version might still run dub
-anyway, if "git describe" fails (for example, if the package was downloaded
-via dub).
+anyway if detecting the version through git/hg fails (for example, if the
+package is not in a VCS-controlled working directory, such as the case when
+a package is downloaded via dub).
 
 OPTIONS:`).replace("\t", "    ");
 
@@ -90,6 +91,9 @@ bool useDub = false;
 bool noIgnoreFile = false;
 bool dryRun = false;
 
+bool detectedGit;
+bool detectedHg;
+
 // Returns: Should program execution continue?
 bool doGetOpt(ref string[] args)
 {
@@ -102,7 +106,7 @@ bool doGetOpt(ref string[] args)
 			"dub",            "        Use dub. May be slightly slower, but allows --src to be auto-detected, and adds extra info to the generated module.", &useDub,
 			"s|src",          "= VALUE Path to source files. Required unless --dub is used.", &projectSourcePath,
 			"module",         "= VALUE Override the module name. Default: packageVersion", &outModuleName,
-			"no-ignore-file", "        Do not attempt to update .gitignore", &noIgnoreFile,
+			"no-ignore-file", "        Do not attempt to update .gitignore/.hgignore", &noIgnoreFile,
 			"dry-run",        "        Dry run. Don't actually write or modify any files. Implies --verbose",
 				{ logLevel = LogLevel.verbose; scriptlikeEcho = true; dryRun = true;},
 			//"silent",         "        Silence all non-error output",           { logLevel = LogLevel.silent; },
@@ -158,6 +162,8 @@ void generatePackageVersion()
 	import std.file : exists;
 	import std.path : buildPath, dirName;
 	
+	detectTools();
+	
 	// Grab basic info
 	auto versionStr = getVersionStr();
 	logTrace("versionStr: ", versionStr);
@@ -179,7 +185,7 @@ by gen-package-version `~packageVersion~`
 module `~outPackageName~`.`~outModuleName~`;
 
 /++
-Version of this package, obtained via "git describe"
+Version of this package.
 +/
 enum packageVersion = "`~versionStr~`";
 
@@ -214,9 +220,18 @@ enum packageTimestamp = "`~now.toISOExtString()~`";
 			fail(e.msg);
 	}
 	
-	// Check for .gitignore
+	// Update VCS ignore files
 	if(!noIgnoreFile)
-		addToGitIgnore(outPath);
+		addToIgnoreFiles(outPath);
+}
+
+void detectTools()
+{
+	detectedGit = existsAsDir(".git");
+	detectedHg = existsAsDir(".hg");
+	
+	logVerbose("Git working directory?: ", detectedGit);
+	logVerbose("Hg working directory?: ", detectedHg);
 }
 
 // Obtain the version
@@ -248,7 +263,7 @@ string getVersionStrGit()
 	import std.string : strip;
 
 	// Don't bother running git if it's not even a git working directory
-	if(!existsAsDir(".git"))
+	if(!detectedGit)
 		return null;
 	
 	auto result = tryRunCollect("git describe");
@@ -261,10 +276,8 @@ string getVersionStrGit()
 // Attempt to get the version from Mercurial
 string getVersionStrHg()
 {
-	import std.string : strip;
-
 	// Don't bother running hg if it's not even an hg working directory
-	if(!existsAsDir(".hg"))
+	if(!detectedHg)
 		return null;
 	
 	auto result = tryRunCollect(`hg log -r . --template '{latesttag}-{latesttagdistance}-{node|short}'`);
@@ -377,12 +390,23 @@ JSONValue getPackageInfo(JSONValue dubInfo, string packageName)
 	assert(0);
 }
 
-void addToGitIgnore(string path)
+void addToIgnoreFiles(string path)
 {
-	immutable ignoreFileName = ".gitignore";
-	// Normalize to the style of git's homeland, Linux.
+	if(detectedGit)
+		addToIgnore(".gitignore", path, false);
+
+	if(detectedHg)
+		addToIgnore(".hgignore", path, true);
+}
+
+void addToIgnore(string ignoreFileName, string path, bool useRegex)
+{
+	// Normalize to the standard git/hg ignore style.
 	// Don't worry, this works on Windows just fine.
 	path = path.replace("\\", "/");
+	
+	if(useRegex)
+		path = "^" ~ path ~ "$";
 	
 	// Doesn't already exist? Create it.
 	if(!std.file.exists(ignoreFileName))
@@ -413,7 +437,7 @@ void addToGitIgnore(string path)
 	// Append 'path' to the ignore file
 	if(!isAlreadyInFile)
 	{
-		logVerbose("Path '", path, "' not found in ", ignoreFileName, " file. Adding it.");
+		logVerbose("Pattern '", path, "' not found in ", ignoreFileName, " file. Adding it.");
 
 		if(!dryRun)
 		{
@@ -428,5 +452,5 @@ void addToGitIgnore(string path)
 		}
 	}
 	else
-		logVerbose("Path '", path, "' is already found in ", ignoreFileName, " file.");
+		logVerbose("Pattern '", path, "' is already found in ", ignoreFileName, " file.");
 }

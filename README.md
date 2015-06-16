@@ -1,11 +1,11 @@
 gen-package-version
 ===================
 
-Automatically generate a [D](http://dlang.org) module with version and timestamp information (detected from git) every time your program or library is built.
+Automatically generate a [D](http://dlang.org) module with version and timestamp information (detected from git or Mercurial/hg) every time your program or library is built.
 
-Even better, all your in-between builds will automatically have *their own* git-generated version number, including the git commit hash (for example: ```v1.2.0-1-g78f5cf9```). So there's never any confusion as to which "version" of v1.2.0 you're running!
+Even better, all your in-between builds will automatically have *their own* git-generated version number, including the VCS commit hash (for example: ```v1.2.0-1-g78f5cf9```). So there's never any confusion as to which "version" of v1.2.0 you're running!
 
-If detecting the version number via git fails, gen-package-version will attempt to detect it via the currect directory name (ex, ```~/.dub/packages/[project-name]-[version-tag]```).
+If detecting the version number via git/hg fails, gen-package-version will attempt to detect it via the currect directory name (ex, ```~/.dub/packages/[project-name]-[version-tag]```).
 
 [ [Changelog](https://github.com/Abscissa/gen-package-version/blob/master/CHANGELOG.md) ]
 
@@ -19,7 +19,7 @@ First, add the following to your project's [dub.json](http://code.dlang.org/gett
 ```json
 {
 	"dependencies": {
-		"gen-package-version": "~>0.9.3"
+		"gen-package-version": "~>0.9.4"
 	},
 	"preGenerateCommands":
 		["cd $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"]
@@ -32,10 +32,12 @@ Replace ```your.package.name``` with the name of your project's D package (ex: `
 
 Optionally, you can replace ```--src=path/to/src``` with ```--dub```. Then, gen-package-version will use dub (via ```dub describe```) to automatically detect your source path and add some extra info in the packageVersion module it generates. More options are also available (see "Help Screen" below).
 
-Finally, make sure your project is [tagged](https://git-scm.com/book/en/v2/Git-Basics-Tagging) with a version number (it must be a git "annotated" tag, ie a tag with a message - doesn't matter what the message is). Example:
+Finally, make sure your project is tagged with a version number (if using git, it must be an "annotated" [tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging), ie a tag with a message - doesn't matter what the message is). Example:
 
 ```bash
-$ git tag -a v1.2.0 -m 'This is version v1.2.0'
+$ git tag -a v1.2.0 -m 'Tag v1.2.0'
+or
+$ hg tag v1.2.0
 ```
 
 That's it. Now your program will always be able to access its own version number (auto-detected from git) and build timestamp:
@@ -96,7 +98,7 @@ Or download and compile with no dub needed at all:
 ```bash
 $ git clone https://github.com/Abscissa/gen-package-version.git
 $ cd gen-package-version
-$ git checkout v0.9.3  # Or newer
+$ git checkout v0.9.4  # Or newer
 
 $ git clone https://github.com/Abscissa/scriptlike.git
 $ cd scriptlike
@@ -114,18 +116,18 @@ Help Screen
 View this help screen with ```dub run gen-package-version -- --help``` or ```gen-package-version --help```:
 
 ```
-gen-package-version v0.9.3
+gen-package-version v0.9.4
 <https://github.com/Abscissa/gen-package-version>
 -------------------------------------------------
 Generates a D module with version information automatically-detected
-from git and (optionally) dub. This generated D file is automatically
-added to .gitignore if necessary (unless using --no-ignore-file).
+from git or hg and (optionally) dub. This generated D file is automatically
+added to .gitignore/.hgignore if necessary (unless using --no-ignore-file).
 
 It is recommended to run this via DUB's preGenerateCommands by adding the
 following lines to your project's dub.json:
 
     "dependencies": {
-        "gen-package-version": "~>0.9.3"
+        "gen-package-version": "~>0.9.4"
     },
     "preGenerateCommands":
         ["cd $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"],
@@ -157,17 +159,19 @@ gen-package-version foo.bar --dub
     writeln("This program's name is ", packageName);
 
 Note that even if --dub isn't used, gen-package-version might still run dub
-anyway, if "git describe" fails (for example, if the package was downloaded
-via dub).
+anyway if detecting the version through git/hg fails (for example, if the
+package is not in a VCS-controlled working directory, such as the case when
+a package is downloaded via dub).
 
 OPTIONS:
               --dub         Use dub. May be slightly slower, but allows --src to be auto-detected, and adds extra info to the generated module.
 -s            --src = VALUE Path to source files. Required unless --dub is used.
            --module = VALUE Override the module name. Default: packageVersion
-   --no-ignore-file         Do not attempt to update .gitignore
+   --no-ignore-file         Do not attempt to update .gitignore/.hgignore
           --dry-run         Dry run. Don't actually write or modify any files. Implies --verbose
 -q          --quiet         Quiet mode
 -v        --verbose         Verbose mode
             --trace         Extremely verbose mode (for debugging)
           --version         Show this program's version number and exit
+-h           --help This help information.
 ```

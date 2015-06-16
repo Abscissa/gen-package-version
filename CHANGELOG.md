@@ -3,9 +3,10 @@
 
 (Dates below are YYYY/MM/DD)
 
-v0.9.4 - TBD
+v0.9.4 - 2015/06/16
 -------------------
 - **Enhancement:** Support detecting the version number via Mercurial (hg).
+- **Enhancement:** Support .hgignore for Mercurial working directories.
 
 v0.9.3 - 2015/06/15
 -------------------
