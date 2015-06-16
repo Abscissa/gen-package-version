@@ -282,7 +282,17 @@ string getVersionStrHg()
 	
 	auto result = tryRunCollect(`hg log -r . --template '{latesttag}-{latesttagdistance}-{node|short}'`);
 	if(!result.status)
-		return result.output;
+	{
+		auto parts = result.output.split("-");
+		if(parts.length < 3) // Unexpected
+			return null;
+		
+		// latesttagdistance == 0?
+		if(parts[$-2] == "0")
+			return parts[0..$-2].join("-"); // Return *only* the {latesttag} part
+		else
+			return result.output; // Return the whole thing
+	}
 
 	return null;
 }
