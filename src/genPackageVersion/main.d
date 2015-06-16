@@ -227,6 +227,10 @@ string getVersionStr()
 	// Try "git describe"
 	ver = getVersionStrGit();
 
+	// Try Mersurial
+	if(ver.empty)
+		ver = getVersionStrHg();
+	
 	// Try checking the name of the directory (ex, for packages fetched by dub)
 	if(ver.empty)
 		ver = getVersionStrInferFromDir();
@@ -250,6 +254,22 @@ string getVersionStrGit()
 	auto result = tryRunCollect("git describe");
 	if(!result.status)
 		return result.output.strip();
+
+	return null;
+}
+
+// Attempt to get the version from Mercurial
+string getVersionStrHg()
+{
+	import std.string : strip;
+
+	// Don't bother running hg if it's not even an hg working directory
+	if(!existsAsDir(".hg"))
+		return null;
+	
+	auto result = tryRunCollect(`hg log -r . --template '{latesttag}-{latesttagdistance}-{node|short}'`);
+	if(!result.status)
+		return result.output;
 
 	return null;
 }
