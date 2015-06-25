@@ -18,13 +18,11 @@ First, add the following to your project's [dub.json](http://code.dlang.org/gett
 
 ```json
 {
-	"dependencies": {
-		"gen-package-version": "~>0.9.5"
-	},
-	"preGenerateCommands-posix":
-		["cd $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"],
-	"preGenerateCommands-windows":
-		["cd /D $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"]
+    "dependencies": {
+        "gen-package-version": "~>0.9.5"
+    },
+    "preGenerateCommands":
+        ["dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"]
 }
 ```
 
@@ -125,14 +123,14 @@ Generates a D module with version information automatically-detected
 from git or hg and (optionally) dub. This generated D file is automatically
 added to .gitignore/.hgignore if necessary (unless using --no-ignore-file).
 
-It is recommended to run this via DUB's preGenerateCommands by adding the
-following lines to your project's dub.json:
+It is recommended to run this via DUB's preGenerateCommands by copy/pasting the
+following lines into your project's dub.json:
 
     "dependencies": {
-        "gen-package-version": "~>0.9.4"
+        "gen-package-version": "~>0.9.5"
     },
     "preGenerateCommands":
-        ["cd $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"],
+        ["dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"]
 
 USAGE:
 gen-package-version [options] your.package.name --src=path/to/src
@@ -168,6 +166,7 @@ a package is downloaded via dub).
 OPTIONS:
               --dub         Use dub. May be slightly slower, but allows --src to be auto-detected, and adds extra info to the generated module.
 -s            --src = VALUE Path to source files. Required unless --dub is used.
+-r           --root = VALUE Path to root of project directory. Default: Current directory
            --module = VALUE Override the module name. Default: packageVersion
    --no-ignore-file         Do not attempt to update .gitignore/.hgignore
           --dry-run         Dry run. Don't actually write or modify any files. Implies --verbose

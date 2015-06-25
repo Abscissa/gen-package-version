@@ -20,16 +20,15 @@ Generates a D module with version information automatically-detected
 from git or hg and (optionally) dub. This generated D file is automatically
 added to .gitignore/.hgignore if necessary (unless using --no-ignore-file).
 
-It is recommended to run this via DUB's preGenerateCommands by adding the
-following lines to your project's dub.json:
+It is recommended to run this via DUB's preGenerateCommands by copy/pasting the
+following lines into your project's dub.json:
 
 	"dependencies": {
 		"gen-package-version": "~>0.9.5"
 	},
-	"preGenerateCommands-posix":
-		["cd $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"],
-	"preGenerateCommands-windows":
-		["cd /D $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"]
+	"preGenerateCommands":
+		["dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"]
+
 USAGE:
 gen-package-version [options] your.package.name --src=path/to/src
 gen-package-version [options] your.package.name --dub
@@ -88,6 +87,7 @@ void log(LogLevel minimumLogLevel, T...)(T args)
 string outPackageName = null;
 string outModuleName = "packageVersion";
 string projectSourcePath = null;
+string rootPath = ".";
 bool useDub = false;
 bool noIgnoreFile = false;
 bool dryRun = false;
@@ -106,6 +106,7 @@ bool doGetOpt(ref string[] args)
 		auto helpInfo = args.getopt(
 			"dub",            "        Use dub. May be slightly slower, but allows --src to be auto-detected, and adds extra info to the generated module.", &useDub,
 			"s|src",          "= VALUE Path to source files. Required unless --dub is used.", &projectSourcePath,
+			"r|root",         "= VALUE Path to root of project directory. Default: Current directory", &rootPath,
 			"module",         "= VALUE Override the module name. Default: packageVersion", &outModuleName,
 			"no-ignore-file", "        Do not attempt to update .gitignore/.hgignore", &noIgnoreFile,
 			"dry-run",        "        Dry run. Don't actually write or modify any files. Implies --verbose",
@@ -148,7 +149,9 @@ void main(string[] args)
 	// Handle args
 	if(!doGetOpt(args))
 		return;
-
+	
+	chdir(rootPath);
+	
 	try
 		generatePackageVersion();
 	catch(ErrorLevelException e)
@@ -339,7 +342,8 @@ JSONValue getPackageJsonInfo()
 	
 	if(!isCached)
 	{
-		jsonRoot = parseJSON( runCollect("dub describe") );
+		auto rawJson = runCollect("dub describe");
+		jsonRoot = parseJSON( rawJson );
 		isCached = true;
 	}
 	

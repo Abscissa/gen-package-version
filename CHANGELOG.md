@@ -3,8 +3,9 @@
 
 (Dates below are YYYY/MM/DD)
 
-v0.9.5 - 2015/06/25
+v0.9.5 - TBD
 -------------------
+- **Enhancement:** Add ```-r|--root``` to support projects in any directory, not just the current directory.
 - **Fixed:** Failure on Windows when target project is on a different drive letter from current working directory.
 
 v0.9.4 - 2015/06/16
