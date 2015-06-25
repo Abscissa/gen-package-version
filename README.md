@@ -19,10 +19,12 @@ First, add the following to your project's [dub.json](http://code.dlang.org/gett
 ```json
 {
 	"dependencies": {
-		"gen-package-version": "~>0.9.4"
+		"gen-package-version": "~>0.9.5"
 	},
-	"preGenerateCommands":
-		["cd $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"]
+	"preGenerateCommands-posix":
+		["cd $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"],
+	"preGenerateCommands-windows":
+		["cd /D $PACKAGE_DIR && dub run gen-package-version -- your.package.name --src=path/to/src"]
 }
 ```
 

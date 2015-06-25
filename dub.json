@@ -14,5 +14,5 @@
 	"preGenerateCommands-posix":
 		["cd $PACKAGE_DIR && chmod +x helper/bootstrap.sh && helper/bootstrap.sh $SCRIPTLIKE_PACKAGE_DIR"],
 	"preGenerateCommands-windows":
-		["cd $PACKAGE_DIR && helper\\bootstrap.cmd $SCRIPTLIKE_PACKAGE_DIR"]
+		["cd /D $PACKAGE_DIR && helper\\bootstrap.cmd $SCRIPTLIKE_PACKAGE_DIR"]
 }

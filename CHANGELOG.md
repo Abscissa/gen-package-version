@@ -3,6 +3,10 @@
 
 (Dates below are YYYY/MM/DD)
 
+v0.9.5 - 2015/06/25
+-------------------
+- **Fixed:** Failure on Windows when target project is on a different drive letter from current working directory.
+
 v0.9.4 - 2015/06/16
 -------------------
 - **Enhancement:** Support detecting the version number via Mercurial (hg).
