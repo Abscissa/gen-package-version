@@ -111,11 +111,11 @@ bool doGetOpt(ref string[] args)
 			"module",         "= VALUE Override the module name. Default: packageVersion", &outModuleName,
 			"no-ignore-file", "        Do not attempt to update .gitignore/.hgignore", &noIgnoreFile,
 			"force",          "        Force overwriting the output file, even is it's up-to-date.", &force,
-			"dry-run",        "        Dry run. Don't actually write or modify any files. Implies --verbose",
-				{ logLevel = LogLevel.verbose; scriptlikeEcho = true; dryRun = true;},
+			"dry-run",        "        Dry run. Don't actually write or modify any files. Implies --trace",
+				{ logLevel = LogLevel.trace; scriptlikeEcho = true; dryRun = true;},
 			//"silent",         "        Silence all non-error output",           { logLevel = LogLevel.silent; },
 			"q|quiet",        "        Quiet mode",                             { logLevel = LogLevel.quiet; },
-			"v|verbose",      "        Verbose mode",                           { logLevel = LogLevel.verbose; scriptlikeEcho = true; },
+			"v|verbose",      "        Verbose mode",                           { logLevel = LogLevel.verbose; },
 			"trace",          "        Extremely verbose mode (for debugging)", { logLevel = LogLevel.trace; scriptlikeEcho = true; },
 			//"log-level",      "        Verbosity level: --log-level=silent|quiet|normal|verbose|trace", &logLevel,
 			"version",        "        Show this program's version number and exit", &showVersion,
@@ -203,9 +203,9 @@ std.datetime.fromISOExtString(packageTimestamp)
 +/
 enum packageTimestamp = "`~nowISOStr~`";
 `~dubExtras;
-	logTrace("--------------------------------------");
-	logTrace(dModule);
-	logTrace("--------------------------------------");
+	//logTrace("--------------------------------------");
+	//logTrace(dModule);
+	//logTrace("--------------------------------------");
 	
 	// Determine output filepath
 	auto packagePath = outPackageName.replace(".", dirSeparator);
