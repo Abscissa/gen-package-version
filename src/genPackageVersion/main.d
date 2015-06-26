@@ -91,6 +91,7 @@ string rootPath = ".";
 bool useDub = false;
 bool noIgnoreFile = false;
 bool dryRun = false;
+bool force = false;
 
 bool detectedGit;
 bool detectedHg;
@@ -109,6 +110,7 @@ bool doGetOpt(ref string[] args)
 			"r|root",         "= VALUE Path to root of project directory. Default: Current directory", &rootPath,
 			"module",         "= VALUE Override the module name. Default: packageVersion", &outModuleName,
 			"no-ignore-file", "        Do not attempt to update .gitignore/.hgignore", &noIgnoreFile,
+			"force",          "        Force overwriting the output file, even is it's up-to-date.", &force,
 			"dry-run",        "        Dry run. Don't actually write or modify any files. Implies --verbose",
 				{ logLevel = LogLevel.verbose; scriptlikeEcho = true; dryRun = true;},
 			//"silent",         "        Silence all non-error output",           { logLevel = LogLevel.silent; },
@@ -180,9 +182,11 @@ void generatePackageVersion()
 		dubExtras = generateDubExtras(projectSourcePath);
 	
 	// Generate D source code
+	auto nowStr = now.toString();
+	auto nowISOStr = now.toISOExtString();
 	auto dModule =
 `/++
-Generated at `~now.toString()~`
+Generated at `~nowStr~`
 by gen-package-version `~packageVersion~`
 <https://github.com/Abscissa/gen-package-version>
 +/
@@ -198,7 +202,7 @@ Timestamp of when this packageVersion module was generated,
 as an ISO Ext string. Get a SysTime from this via:
 std.datetime.fromISOExtString(packageTimestamp)
 +/
-enum packageTimestamp = "`~now.toISOExtString()~`";
+enum packageTimestamp = "`~nowISOStr~`";
 `~dubExtras;
 	logTrace("--------------------------------------");
 	logTrace(dModule);
@@ -210,11 +214,38 @@ enum packageTimestamp = "`~now.toISOExtString()~`";
 	auto outPath = buildPath(projectSourcePath, packagePath, modulePath) ~ ".d";
 	logTrace("outPath: ", outPath);
 	
-	// Write the file
+	// Ensure directory for output file exits
 	auto outDir = std.path.dirName(outPath);
 	failEnforce(exists(outDir), "Output directory doesn't exist: ", outDir);
 	failEnforce(std.file.isDir(outDir), "Output directory isn't a directory: ", outDir);
 
+	// Update VCS ignore files
+	if(!noIgnoreFile)
+		addToIgnoreFiles(outPath);
+
+	// Check whether output file should be updated
+	if(force)
+		logVerbose(`--force used, skipping "up-to-date" check`);
+	else
+	{
+		if(existsAsFile(outPath))
+		{
+			import std.regex;
+
+			auto existingModule = cast(string) scriptlike.file.read(Path(outPath));
+			auto adjustedExistingModule = existingModule
+				.replaceFirst(regex(`Generated at [^\n]*\n`), `Generated at `~nowStr~"\n")
+				.replaceFirst(regex(`packageTimestamp = "[^"]*";`), `packageTimestamp = "`~nowISOStr~`";`);
+
+			if(adjustedExistingModule == dModule)
+			{
+				logVerbose("Existing version file is up-to-date, skipping overwrite.");
+				return;
+			}
+		}
+	}
+	
+	// Write the file
 	logVerbose("Saving to ", outPath);
 	if(!dryRun)
 	{
@@ -223,10 +254,6 @@ enum packageTimestamp = "`~now.toISOExtString()~`";
 		catch(FileException e)
 			fail(e.msg);
 	}
-	
-	// Update VCS ignore files
-	if(!noIgnoreFile)
-		addToIgnoreFiles(outPath);
 }
 
 void detectTools()

@@ -6,6 +6,7 @@
 v0.9.5 - TBD
 -------------------
 - **Enhancement:** Add ```-r|--root``` to support projects in any directory, not just the current directory.
+- **Fixed:** Don't update the version file (and thus trigger a project rebuild) if the version file doesn't need updated. Bypass this check with the new ```--force``` flag.
 - **Fixed:** Failure on Windows when target project is on a different drive letter from current working directory.
 
 v0.9.4 - 2015/06/16
