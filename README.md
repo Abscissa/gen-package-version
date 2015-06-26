@@ -1,7 +1,7 @@
 gen-package-version
 ===================
 
-Automatically generate a [D](http://dlang.org) module with version and timestamp information (detected from git or Mercurial/hg) every time your program or library is built.
+Automatically generate a [D](http://dlang.org) module with version and timestamp information (detected from git or Mercurial/hg) every time your program or library is built. You can also generate a DDOC macro file (using the ```--ddoc=dir``` switch.)
 
 Even better, all your in-between builds will automatically have *their own* git-generated version number, including the VCS commit hash (for example: ```v1.2.0-1-g78f5cf9```). So there's never any confusion as to which "version" of v1.2.0 you're running!
 

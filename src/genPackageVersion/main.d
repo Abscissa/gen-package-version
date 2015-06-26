@@ -44,6 +44,13 @@ gen-package-version foo.bar --src=source/dir
 	writeln("Version: ", packageVersion);
 	writeln("Built on: ", packageTimestamp);
 
+gen-package-version foo.bar --src=source/dir --ddoc=ddoc/dir
+	Same as above, but also generates a DDOC macro file:
+		ddoc/dir/packageVersion.ddoc
+	
+	Which defines the macros: $(FOO_BAR_VERSION), $(FOO_BAR_TIMESTAMP)
+	and $(FOO_BAR_TIMESTAMP_ISO).
+
 gen-package-version foo.bar --dub
 	Generates module "foo.bar.packageVersion" in the file:
 		(your_src_dir)/foo/bar/packageVersion.d
@@ -84,10 +91,12 @@ void log(LogLevel minimumLogLevel, T...)(T args)
 		writeln(args);
 }
 
+//TODO: Ban '.' from outModuleName.
 string outPackageName = null;
 string outModuleName = "packageVersion";
 string projectSourcePath = null;
 string rootPath = ".";
+string ddocDir = null;
 bool useDub = false;
 bool noIgnoreFile = false;
 bool dryRun = false;
@@ -109,6 +118,7 @@ bool doGetOpt(ref string[] args)
 			"s|src",          "= VALUE Path to source files. Required unless --dub is used.", &projectSourcePath,
 			"r|root",         "= VALUE Path to root of project directory. Default: Current directory", &rootPath,
 			"module",         "= VALUE Override the module name. Default: packageVersion", &outModuleName,
+			"ddoc",           "= VALUE Generate a DDOC macro file in the directory 'VALUE'.", &ddocDir,
 			"no-ignore-file", "        Do not attempt to update .gitignore/.hgignore", &noIgnoreFile,
 			"force",          "        Force overwriting the output file, even is it's up-to-date.", &force,
 			"dry-run",        "        Dry run. Don't actually write or modify any files. Implies --trace",
@@ -174,15 +184,20 @@ void generatePackageVersion()
 	logTrace("versionStr: ", versionStr);
 	
 	auto now = Clock.currTime;
+	auto nowStr = now.toString();
+	auto nowISOStr = now.toISOExtString();
 	
 	// Generate dub extras
 	string dubExtras;
 	if(useDub)
 		dubExtras = generateDubExtras(projectSourcePath);
 	
+	// Generate DDOC macros
+	string ddocPath;
+	if(ddocDir)
+		ddocPath = generateDdocMacros(ddocDir, outPackageName, outModuleName, versionStr, nowStr, nowISOStr);
+	
 	// Generate D source code
-	auto nowStr = now.toString();
-	auto nowISOStr = now.toISOExtString();
 	auto dModule =
 `/++
 Generated at `~nowStr~`
@@ -220,7 +235,12 @@ enum packageTimestamp = "`~nowISOStr~`";
 
 	// Update VCS ignore files
 	if(!noIgnoreFile)
+	{
 		addToIgnoreFiles(outPath);
+
+		if(ddocPath)
+			addToIgnoreFiles(ddocPath);
+	}
 
 	// Check whether output file should be updated
 	if(force)
@@ -253,6 +273,66 @@ enum packageTimestamp = "`~nowISOStr~`";
 		catch(FileException e)
 			fail(e.msg);
 	}
+}
+
+// Returns path to the output file that was (or would've been) written.
+string generateDdocMacros(string outDir, string packageName, string moduleName,
+	string ver, string timestamp, string timestampIso)
+{
+	import std.string : toUpper;
+	auto macroPrefix = packageName.toUpper().replace(".", "_");
+	
+	// Ensure directory for output file exits
+	failEnforce(exists(Path(outDir)), "DDOC output directory doesn't exist: ", outDir);
+	failEnforce(isDir(Path(outDir)), "DDOC output directory isn't a directory: ", outDir);
+
+	// Determine output filepath
+	auto outPath = buildPath(outDir, moduleName) ~ ".ddoc";
+	logTrace("ddoc outPath: ", outPath);
+	
+	// Generate DDOC macro code
+	auto newDdoc =
+`Ddoc
+
+Macros:
+`~macroPrefix~`_VERSION       = `~ver~`
+`~macroPrefix~`_TIMESTAMP     = `~timestamp~`
+`~macroPrefix~`_TIMESTAMP_ISO = `~timestampIso~`
+`;
+	
+	// Check whether output file should be updated
+	if(force)
+		logVerbose(`--force used, skipping ddoc "up-to-date" check`);
+	else
+	{
+		if(existsAsFile(outPath))
+		{
+			import std.regex;
+
+			auto existingDdoc = cast(string) scriptlike.file.read(Path(outPath));
+			auto adjustedExistingDdoc = existingDdoc
+				.replaceFirst(regex(`_TIMESTAMP     = [^\n]*\n`), `_TIMESTAMP     = `~timestamp~"\n")
+				.replaceFirst(regex(`_TIMESTAMP_ISO = [^\n]*\n`), `_TIMESTAMP_ISO = `~timestampIso~"\n");
+
+			if(adjustedExistingDdoc == newDdoc)
+			{
+				logVerbose("Existing ddoc version macro file is up-to-date, skipping overwrite.");
+				return outPath;
+			}
+		}
+	}
+	
+	// Write the file
+	logVerbose("Saving to ", outPath);
+	if(!dryRun)
+	{
+		try
+			scriptlike.file.write(outPath, newDdoc);
+		catch(FileException e)
+			fail(e.msg);
+	}
+	
+	return outPath;
 }
 
 void detectTools()

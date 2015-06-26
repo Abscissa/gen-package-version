@@ -5,6 +5,7 @@
 
 v0.9.5 - TBD
 -------------------
+- **Enhancement:** Add ```--ddoc=dir``` to also generate a DDOC macro file.
 - **Enhancement:** Add ```-r|--root``` to support projects in any directory, not just the current directory.
 - **Enhancement:** Minor improvements to ```--verbose``` and ```--trace``` outputs.
 - **Fixed:** Don't update the version file (and thus trigger a project rebuild) if the version file doesn't need updated. Bypass this check with the new ```--force``` flag.
