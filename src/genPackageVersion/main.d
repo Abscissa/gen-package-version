@@ -165,7 +165,6 @@ void main(string[] args)
 void generatePackageVersion()
 {
 	import std.datetime;
-	import std.file : exists;
 	import std.path : buildPath, dirName;
 	
 	detectTools();
@@ -216,8 +215,8 @@ enum packageTimestamp = "`~nowISOStr~`";
 	
 	// Ensure directory for output file exits
 	auto outDir = std.path.dirName(outPath);
-	failEnforce(exists(outDir), "Output directory doesn't exist: ", outDir);
-	failEnforce(std.file.isDir(outDir), "Output directory isn't a directory: ", outDir);
+	failEnforce(exists(Path(outDir)), "Output directory doesn't exist: ", outDir);
+	failEnforce(isDir(Path(outDir)), "Output directory isn't a directory: ", outDir);
 
 	// Update VCS ignore files
 	if(!noIgnoreFile)
@@ -250,7 +249,7 @@ enum packageTimestamp = "`~nowISOStr~`";
 	if(!dryRun)
 	{
 		try
-			std.file.write(outPath, dModule);
+			scriptlike.file.write(outPath, dModule);
 		catch(FileException e)
 			fail(e.msg);
 	}
@@ -332,7 +331,6 @@ string getVersionStrHg()
 string getVersionStrInferFromDir()
 {
 	import std.string : chompPrefix, isNumeric;
-	import std.file : getcwd, baseName;
 	
 	JSONValue jsonRoot;
 	try
@@ -341,7 +339,7 @@ string getVersionStrInferFromDir()
 		return null;
 	
 	auto rootPackageName = jsonRoot["rootPackage"].str;
-	auto currDir = getcwd().baseName();
+	auto currDir = getcwd().baseName().toString();
 	logTrace("rootPackageName: ", rootPackageName);
 	logTrace("currDir: ", currDir);
 	
@@ -451,17 +449,17 @@ void addToIgnore(string ignoreFileName, string path, bool useRegex)
 		path = "^" ~ path ~ "$";
 	
 	// Doesn't already exist? Create it.
-	if(!std.file.exists(ignoreFileName))
+	if(!exists(Path(ignoreFileName)))
 	{
 		logVerbose("No existing ", ignoreFileName, " file. Creating it.");
 		if(!dryRun)
-			std.file.write(ignoreFileName, path~"\n");
+			scriptlike.file.write(ignoreFileName, path~"\n");
 
 		return;
 	}
 	
 	// Make sure it's actually a file
-	if(!std.file.isFile(ignoreFileName))
+	if(!isFile(Path(ignoreFileName)))
 	{
 		logVerbose("Strange, ", ignoreFileName, " exists but isn't a file. Not updating it.");
 		return; // Not a file? Don't even bother with it.
