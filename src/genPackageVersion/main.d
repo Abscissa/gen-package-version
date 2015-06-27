@@ -170,17 +170,16 @@ void main(string[] args)
 	chdir(rootPath);
 	
 	try
-		generatePackageVersion();
+		generateAll();
 	catch(ErrorLevelException e)
 		fail(e.msg);
 		
 	return;
 }
 
-void generatePackageVersion()
+void generateAll()
 {
 	import std.datetime;
-	import std.path : buildPath, dirName;
 	
 	detectTools();
 	
@@ -197,15 +196,34 @@ void generatePackageVersion()
 	if(useDub)
 		dubExtras = generateDubExtras(projectSourcePath);
 	
+	// Generate D module
+	auto dModulePath = generateDModule(outPackageName, outModuleName, versionStr, nowStr, nowISOStr, dubExtras);
+
 	// Generate DDOC macros
 	string ddocPath;
 	if(ddocDir)
 		ddocPath = generateDdocMacros(ddocDir, outPackageName, outModuleName, versionStr, nowStr, nowISOStr);
-	
+
+	// Update VCS ignore files
+	if(!noIgnoreFile)
+	{
+		addToIgnoreFiles(dModulePath);
+
+		if(ddocPath)
+			addToIgnoreFiles(ddocPath);
+	}
+}
+
+// Returns path to the output file that was (or would've been) written.
+string generateDModule(string packageName, string moduleName,
+	string ver, string timestamp, string timestampIso, string dubExtras)
+{
+	import std.path : buildPath, dirName;
+
 	// Generate D source code
 	auto dModule =
 `/++
-Generated at `~nowStr~`
+Generated at `~timestamp~`
 by gen-package-version `~packageVersion~`: 
 $(LINK https://github.com/Abscissa/gen-package-version)
 +/
@@ -214,12 +232,12 @@ module `~outPackageName~`.`~outModuleName~`;
 /++
 Version of this package.
 +/
-enum packageVersion = "`~versionStr~`";
+enum packageVersion = "`~ver~`";
 
 /++
 Human-readable timestamp of when this module was generated.
 +/
-enum packageTimestamp = "`~nowStr~`";
+enum packageTimestamp = "`~timestamp~`";
 
 /++
 Timestamp of when this module was generated, as an ISO Ext string.
@@ -229,7 +247,7 @@ Get a SysTime from this via:
 std.datetime.fromISOExtString(packageTimestamp)
 ------
 +/
-enum packageTimestampISO = "`~nowISOStr~`";
+enum packageTimestampISO = "`~timestampIso~`";
 `~dubExtras;
 	//logTrace("--------------------------------------");
 	//logTrace(dModule);
@@ -244,16 +262,7 @@ enum packageTimestampISO = "`~nowISOStr~`";
 	auto outDir = std.path.dirName(outPath);
 	failEnforce(exists(Path(outDir)), "Output directory doesn't exist: ", outDir);
 	failEnforce(isDir(Path(outDir)), "Output directory isn't a directory: ", outDir);
-
-	// Update VCS ignore files
-	if(!noIgnoreFile)
-	{
-		addToIgnoreFiles(outPath);
-
-		if(ddocPath)
-			addToIgnoreFiles(ddocPath);
-	}
-
+	
 	// Check whether output file should be updated
 	if(force)
 		logVerbose(`--force used, skipping "up-to-date" check`);
@@ -265,14 +274,14 @@ enum packageTimestampISO = "`~nowISOStr~`";
 
 			auto existingModule = cast(string) scriptlike.file.read(Path(outPath));
 			auto adjustedExistingModule = existingModule
-				.replaceFirst(regex(`Generated at [^\n]*\n`), `Generated at `~nowStr~"\n")
-				.replaceFirst(regex(`packageTimestamp = "[^"]*";`), `packageTimestamp = "`~nowStr~`";`)
-				.replaceFirst(regex(`packageTimestampISO = "[^"]*";`), `packageTimestampISO = "`~nowISOStr~`";`);
+				.replaceFirst(regex(`Generated at [^\n]*\n`), `Generated at `~timestamp~"\n")
+				.replaceFirst(regex(`packageTimestamp = "[^"]*";`), `packageTimestamp = "`~timestamp~`";`)
+				.replaceFirst(regex(`packageTimestampISO = "[^"]*";`), `packageTimestampISO = "`~timestampIso~`";`);
 
 			if(adjustedExistingModule == dModule)
 			{
 				logVerbose("Existing version file is up-to-date, skipping overwrite: ", outPath);
-				return;
+				return outPath;
 			}
 		}
 	}
@@ -286,6 +295,8 @@ enum packageTimestampISO = "`~nowISOStr~`";
 		catch(FileException e)
 			fail(e.msg);
 	}
+	
+	return outPath;
 }
 
 // Returns path to the output file that was (or would've been) written.
