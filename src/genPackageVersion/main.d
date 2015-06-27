@@ -201,7 +201,7 @@ void generatePackageVersion()
 	auto dModule =
 `/++
 Generated at `~nowStr~`
-by gen-package-version `~packageVersion~`
+by gen-package-version `~packageVersion~`: 
 <https://github.com/Abscissa/gen-package-version>
 +/
 module `~outPackageName~`.`~outModuleName~`;
@@ -212,11 +212,19 @@ Version of this package.
 enum packageVersion = "`~versionStr~`";
 
 /++
-Timestamp of when this packageVersion module was generated,
-as an ISO Ext string. Get a SysTime from this via:
-std.datetime.fromISOExtString(packageTimestamp)
+Human-readable timestamp of when this module was generated.
 +/
-enum packageTimestamp = "`~nowISOStr~`";
+enum packageTimestamp = "`~nowStr~`";
+
+/++
+Timestamp of when this module was generated, as an ISO Ext string.
+Get a SysTime from this via:
+
+------
+std.datetime.fromISOExtString(packageTimestamp)
+------
++/
+enum packageTimestampISO = "`~nowISOStr~`";
 `~dubExtras;
 	//logTrace("--------------------------------------");
 	//logTrace(dModule);
