@@ -4,7 +4,7 @@
 	"authors": ["Nick Sabalausky"],
 	"homepage": "https://github.com/Abscissa/gen-package-version",
 	"license": "zlib/libpng",
-	"targetType": "executable",
+
 	"targetPath": "bin",
 	"targetName": "gen-package-version",
 	"sourcePaths": ["src"],
@@ -14,5 +14,18 @@
 	"preGenerateCommands-posix":
 		["cd $PACKAGE_DIR && rdmd helper/bootstrap.d $SCRIPTLIKE_PACKAGE_DIR"],
 	"preGenerateCommands-windows":
-		["cd /D $PACKAGE_DIR && rdmd helper/bootstrap.d $SCRIPTLIKE_PACKAGE_DIR"]
+		["cd /D $PACKAGE_DIR && rdmd helper/bootstrap.d $SCRIPTLIKE_PACKAGE_DIR"],
+
+	"configurations": [
+		{
+			"name": "application",
+			"targetType": "executable",
+			"mainSourceFile": "src/genPackageVersion/main.d"
+		},
+		{
+			"name": "library",
+			"targetType": "library",
+			"excludedSourceFiles": ["src/genPackageVersion/main.d"]
+		}
+	]
 }

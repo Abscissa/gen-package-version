@@ -111,6 +111,40 @@ $ rdmd --build-only -ofbin/gen-package-version -Isrc/ -Iscriptlike/src src/genPa
 # [path/to/gen-package-version/]bin/gen-package-version your.package.name --src=path/to/src
 ```
 
+Using as a library
+------------------
+Although support is very basic, gen-package-version can be used as a library instead of an executable:
+
+In your ```dub.json``` (if using DUB):
+```json
+"dependencies": {
+	"gen-package-version": "~>1.0.0"
+},
+"subConfigurations": {
+	"gen-package-version": "library"
+}
+```
+
+In your source file:
+```d
+import genPackageVersion.genAll;
+import scriptlike.fail : Fail;
+
+try {
+	// Just like running:
+	//   gen-package-version foo.bar --src=source/dir
+	genPackageVersionMain(["dummy-exe-name", "foo.bar", "--src=source/dir"]);
+}
+catch(Fail e) {
+	// Do whatever.
+	//
+	// Or don't catch it at all to cleanly bail with appropriate
+	// output message and no ugly stack trace.
+}
+```
+
+Or, you can bypass gen-package-version's commandline arg parsing and just set the flags directly in ```genPackageVersion.util```. Then call ```void genPackageVersion.genAll.generateAll(void)```. But unlike ```genPackageVersionMain(args)```, this approach is undocumented (unless you generate the docs with DDOC or DDOX yourself) and subject to change.
+
 Help Screen
 -----------
 View this help screen with ```dub run gen-package-version -- --help``` or ```gen-package-version --help```:
