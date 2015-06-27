@@ -280,7 +280,7 @@ enum packageTimestampISO = "`~timestampIso~`";
 
 			if(adjustedExistingModule == dModule)
 			{
-				logVerbose("Existing version file is up-to-date, skipping overwrite: ", outPath);
+				logVerbose("Existing version file is up-to-date, skipping overwrite of ", outPath);
 				return outPath;
 			}
 		}
@@ -340,7 +340,7 @@ Macros:
 
 			if(adjustedExistingDdoc == newDdoc)
 			{
-				logVerbose("Existing ddoc version macro file is up-to-date, skipping overwrite:", outPath);
+				logVerbose("Existing ddoc version macro file is up-to-date, skipping overwrite of ", outPath);
 				return outPath;
 			}
 		}
