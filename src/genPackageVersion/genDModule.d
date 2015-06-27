@@ -36,7 +36,7 @@ Timestamp of when this module was generated, as an ISO Ext string.
 Get a SysTime from this via:
 
 ------
-std.datetime.fromISOExtString(packageTimestamp)
+std.datetime.fromISOExtString(packageTimestampISO)
 ------
 +/
 enum packageTimestampISO = "`~timestampIso~`";
