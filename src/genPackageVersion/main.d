@@ -271,7 +271,7 @@ enum packageTimestampISO = "`~nowISOStr~`";
 
 			if(adjustedExistingModule == dModule)
 			{
-				logVerbose("Existing version file is up-to-date, skipping overwrite.");
+				logVerbose("Existing version file is up-to-date, skipping overwrite: ", outPath);
 				return;
 			}
 		}
@@ -329,7 +329,7 @@ Macros:
 
 			if(adjustedExistingDdoc == newDdoc)
 			{
-				logVerbose("Existing ddoc version macro file is up-to-date, skipping overwrite.");
+				logVerbose("Existing ddoc version macro file is up-to-date, skipping overwrite:", outPath);
 				return outPath;
 			}
 		}
@@ -559,7 +559,7 @@ void addToIgnore(string ignoreFileName, string path, bool useRegex)
 	}
 	
 	// Is 'path' already in the ignore file?
-	//import std.string : strip;
+	import std.string : strip;
 	auto isAlreadyInFile =
 		File(ignoreFileName)
 		.byLine()
