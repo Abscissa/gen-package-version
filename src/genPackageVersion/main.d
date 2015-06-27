@@ -266,7 +266,8 @@ enum packageTimestampISO = "`~nowISOStr~`";
 			auto existingModule = cast(string) scriptlike.file.read(Path(outPath));
 			auto adjustedExistingModule = existingModule
 				.replaceFirst(regex(`Generated at [^\n]*\n`), `Generated at `~nowStr~"\n")
-				.replaceFirst(regex(`packageTimestamp = "[^"]*";`), `packageTimestamp = "`~nowISOStr~`";`);
+				.replaceFirst(regex(`packageTimestamp = "[^"]*";`), `packageTimestamp = "`~nowStr~`";`)
+				.replaceFirst(regex(`packageTimestampISO = "[^"]*";`), `packageTimestampISO = "`~nowISOStr~`";`);
 
 			if(adjustedExistingModule == dModule)
 			{
