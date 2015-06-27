@@ -202,7 +202,7 @@ void generatePackageVersion()
 `/++
 Generated at `~nowStr~`
 by gen-package-version `~packageVersion~`: 
-<https://github.com/Abscissa/gen-package-version>
+$(LINK https://github.com/Abscissa/gen-package-version)
 +/
 module `~outPackageName~`.`~outModuleName~`;
 
