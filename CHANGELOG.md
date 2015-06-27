@@ -6,6 +6,7 @@
 v1.0.0 - TBD
 -------------------
 - **Change:** The generated ```packageTimestamp``` is changed from [ISOExt](http://dlang.org/phobos/std_datetime.html#toISOExtString) format to human readable. The ISOExt formatted version is now called ```packageTimestampISO```.
+- **Change:** Value for ```--module``` is no longer allowed to contain periods.
 - **Enhancement:** Add ```-r|--root``` to support projects in any directory, not just the current directory.
 - **Enhancement:** Minor improvements to ```--verbose``` and ```--trace``` outputs.
 - **Fixed:** Don't update the version file (and thus trigger a project rebuild) if the version file doesn't need updated. Bypass this check with the new ```--force``` flag.

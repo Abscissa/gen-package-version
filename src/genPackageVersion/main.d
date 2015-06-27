@@ -91,7 +91,6 @@ void log(LogLevel minimumLogLevel, T...)(T args)
 		writeln(args);
 }
 
-//TODO: Ban '.' from outModuleName.
 string outPackageName = null;
 string outModuleName = "packageVersion";
 string projectSourcePath = null;
@@ -151,6 +150,12 @@ bool doGetOpt(ref string[] args)
 
 	failEnforce(projectSourcePath || useDub,
 		"Missing --src= (Alternatively, you could use --dub to auto-detect --src=)\n", usageHint);
+
+	failEnforce(!outModuleName.canFind("."),
+		"Module name cannot include '.'\n",
+		"Instead of --module=", outModuleName, ", try using --module=",
+		outModuleName.replace(".", "_"), "\n",
+		usageHint);
 
 	return true;
 }
@@ -232,8 +237,7 @@ enum packageTimestampISO = "`~nowISOStr~`";
 	
 	// Determine output filepath
 	auto packagePath = outPackageName.replace(".", dirSeparator);
-	auto modulePath  = outModuleName .replace(".", dirSeparator);
-	auto outPath = buildPath(projectSourcePath, packagePath, modulePath) ~ ".d";
+	auto outPath = buildPath(projectSourcePath, packagePath, outModuleName) ~ ".d";
 	logTrace("outPath: ", outPath);
 	
 	// Ensure directory for output file exits
