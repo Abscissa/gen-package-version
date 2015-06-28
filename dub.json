@@ -1,6 +1,6 @@
 ﻿{
 	"name": "gen-package-version",
-	"description": "Generate a D module with version information automatically-detected from git.",
+	"description": "Generate a D module with version information automatically-detected from git/hg.",
 	"authors": ["Nick Sabalausky"],
 	"homepage": "https://github.com/Abscissa/gen-package-version",
 	"license": "zlib/libpng",
