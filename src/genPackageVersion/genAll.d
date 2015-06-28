@@ -30,7 +30,7 @@ It is recommended to run this via DUB's preGenerateCommands by copy/pasting the
 following lines into your project's dub.json:
 
 	"dependencies": {
-		"gen-package-version": "~>1.0.0"
+		"gen-package-version": "~>1.0.1"
 	},
 	"preGenerateCommands":
 		["dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"]

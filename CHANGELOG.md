@@ -3,6 +3,10 @@
 
 (Dates below are YYYY/MM/DD)
 
+v1.0.1 - 2015/06/28
+-------------------
+- **Fixed:** Don't use a broken scriptlike release (v0.9.0), use v0.9.1 instead.
+
 v1.0.0 - 2015/06/27
 -------------------
 - **Change:** The generated ```packageTimestamp``` is changed from [ISOExt](http://dlang.org/phobos/std_datetime.html#toISOExtString) format to human readable. The ISOExt formatted version is now called ```packageTimestampISO```.
