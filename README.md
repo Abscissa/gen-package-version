@@ -19,7 +19,7 @@ First, add the following to your project's [dub.json](http://code.dlang.org/gett
 ```json
 {
     "dependencies": {
-        "gen-package-version": "~>0.9.5"
+        "gen-package-version": "~>1.0.0"
     },
     "preGenerateCommands":
         ["dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"]
@@ -98,11 +98,11 @@ Or download and compile with no dub needed at all:
 ```bash
 $ git clone https://github.com/Abscissa/gen-package-version.git
 $ cd gen-package-version
-$ git checkout v0.9.4  # Or newer
+$ git checkout v1.0.0  # Or newer
 
 $ git clone https://github.com/Abscissa/scriptlike.git
 $ cd scriptlike
-$ git checkout v0.8.0  # Or newer
+$ git checkout v0.9.0  # Or newer
 $ cd ..
 
 $ rdmd --build-only -ofbin/gen-package-version -Isrc/ -Iscriptlike/src src/genPackageVersion/main.d
@@ -150,7 +150,7 @@ Help Screen
 View this help screen with ```dub run gen-package-version -- --help``` or ```gen-package-version --help```:
 
 ```
-gen-package-version v0.9.4
+gen-package-version v1.0.0
 <https://github.com/Abscissa/gen-package-version>
 -------------------------------------------------
 Generates a D module with version information automatically-detected
@@ -161,7 +161,7 @@ It is recommended to run this via DUB's preGenerateCommands by copy/pasting the
 following lines into your project's dub.json:
 
     "dependencies": {
-        "gen-package-version": "~>0.9.5"
+        "gen-package-version": "~>1.0.0"
     },
     "preGenerateCommands":
         ["dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"]
@@ -180,6 +180,13 @@ gen-package-version foo.bar --src=source/dir
     import foo.bar.packageVersion;
     writeln("Version: ", packageVersion);
     writeln("Built on: ", packageTimestamp);
+
+gen-package-version foo.bar --src=source/dir --ddoc=ddoc/dir
+    Same as above, but also generates a DDOC macro file:
+        ddoc/dir/packageVersion.ddoc
+    
+    Which defines the macros: $(FOO_BAR_VERSION), $(FOO_BAR_TIMESTAMP)
+    and $(FOO_BAR_TIMESTAMP_ISO).
 
 gen-package-version foo.bar --dub
     Generates module "foo.bar.packageVersion" in the file:
@@ -202,8 +209,10 @@ OPTIONS:
 -s            --src = VALUE Path to source files. Required unless --dub is used.
 -r           --root = VALUE Path to root of project directory. Default: Current directory
            --module = VALUE Override the module name. Default: packageVersion
+             --ddoc = VALUE Generate a DDOC macro file in the directory 'VALUE'.
    --no-ignore-file         Do not attempt to update .gitignore/.hgignore
-          --dry-run         Dry run. Don't actually write or modify any files. Implies --verbose
+            --force         Force overwriting the output file, even is it's up-to-date.
+          --dry-run         Dry run. Don't actually write or modify any files. Implies --trace
 -q          --quiet         Quiet mode
 -v        --verbose         Verbose mode
             --trace         Extremely verbose mode (for debugging)
