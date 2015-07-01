@@ -21,7 +21,7 @@ First, add the following to your project's [dub.json](http://code.dlang.org/gett
 ```json
 {
     "dependencies": {
-        "gen-package-version": "~>1.0.1"
+        "gen-package-version": "~>1.0.2"
     },
     "preGenerateCommands":
         ["dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"]
@@ -100,7 +100,7 @@ Or download and compile with no dub needed at all:
 ```bash
 $ git clone https://github.com/Abscissa/gen-package-version.git
 $ cd gen-package-version
-$ git checkout v1.0.1  # Or newer
+$ git checkout v1.0.2  # Or newer
 
 $ git clone https://github.com/Abscissa/scriptlike.git
 $ cd scriptlike
@@ -120,7 +120,7 @@ Although support is very basic, gen-package-version can be used as a library ins
 In your ```dub.json``` (if using DUB):
 ```json
 "dependencies": {
-	"gen-package-version": "~>1.0.1"
+	"gen-package-version": "~>1.0.2"
 },
 "subConfigurations": {
 	"gen-package-version": "library"
@@ -152,7 +152,7 @@ Help Screen
 View this help screen with ```dub run gen-package-version -- --help``` or ```gen-package-version --help```:
 
 ```
-gen-package-version v1.0.1
+gen-package-version v1.0.2
 <https://github.com/Abscissa/gen-package-version>
 -------------------------------------------------
 Generates a D module with version information automatically-detected
@@ -163,7 +163,7 @@ It is recommended to run this via DUB's preGenerateCommands by copy/pasting the
 following lines into your project's dub.json:
 
     "dependencies": {
-        "gen-package-version": "~>1.0.1"
+        "gen-package-version": "~>1.0.2"
     },
     "preGenerateCommands":
         ["dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"]

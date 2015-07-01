@@ -3,6 +3,10 @@
 
 (Dates below are YYYY/MM/DD)
 
+v1.0.2 - 2015/07/01
+-------------------
+- **Enhancement:** Now works on DMD 2.066.1 (previously required 2.067.0 or up).
+
 v1.0.1 - 2015/06/28
 -------------------
 - **Fixed:** Don't use a broken scriptlike release (v0.9.0), use v0.9.1 instead.
