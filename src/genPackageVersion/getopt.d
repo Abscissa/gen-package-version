@@ -1078,8 +1078,8 @@ unittest
     bool foo, bar;
     args = ["program.name", "--foo", "--bAr"];
     getopt(args,
-        std.getopt.config.caseSensitive,
-        std.getopt.config.passThrough,
+        genPackageVersion.getopt.config.caseSensitive,
+        genPackageVersion.getopt.config.passThrough,
         "foo", &foo,
         "bar", &bar);
     assert(args[1] == "--bAr");
@@ -1089,7 +1089,7 @@ unittest
     args = ["program.name", "--foo", "nonoption", "--bar"];
     foo = bar = false;
     getopt(args,
-        std.getopt.config.stopOnFirstNonOption,
+        genPackageVersion.getopt.config.stopOnFirstNonOption,
         "foo", &foo,
         "bar", &bar);
     assert(foo && !bar && args[1] == "nonoption" && args[2] == "--bar");
@@ -1097,7 +1097,7 @@ unittest
     args = ["program.name", "--foo", "nonoption", "--zab"];
     foo = bar = false;
     getopt(args,
-        std.getopt.config.stopOnFirstNonOption,
+        genPackageVersion.getopt.config.stopOnFirstNonOption,
         "foo", &foo,
         "bar", &bar);
     assert(foo && !bar && args[1] == "nonoption" && args[2] == "--zab");
@@ -1112,7 +1112,7 @@ unittest
 
     args = ["program.name", "--foo", "nonoption", "--bar", "--", "--baz"];
     getopt(args,
-        std.getopt.config.keepEndOfOptions,
+        genPackageVersion.getopt.config.keepEndOfOptions,
         "foo", &foo,
         "bar", &bar);
     assert(args == ["program.name", "nonoption", "--", "--baz"]);
@@ -1161,8 +1161,8 @@ unittest
     getopt
         (
             args,
-            std.getopt.config.bundling,
-            //std.getopt.config.caseSensitive,
+            genPackageVersion.getopt.config.bundling,
+            //genPackageVersion.getopt.config.caseSensitive,
             "linenum|l", &f_linenum,
             "filename|n", &f_filename
         );

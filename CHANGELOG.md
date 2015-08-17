@@ -3,6 +3,10 @@
 
 (Dates below are YYYY/MM/DD)
 
+v1.0.3 - 2015/08/17
+-------------------
+- **Fixed:** Compile error for unittest builds.
+
 v1.0.2 - 2015/07/01
 -------------------
 - **Enhancement:** Now works on DMD 2.066.1 (previously required 2.067.0 or up).
@@ -29,7 +33,7 @@ v0.9.4 - 2015/06/16
 
 v0.9.3 - 2015/06/15
 -------------------
-- **Enhancement:** If detecting the version number via git fails, attempt to detect it via the currect directory name (ex, ```~/.dub/packages/[project-name]-[version-tag]```).
+- **Enhancement:** If detecting the version number via git fails, attempt to detect it via the current directory name (ex, ```~/.dub/packages/[project-name]-[version-tag]```).
 - **Enhancement:** Don't bother running git if there's no ```.git``` directory.
 - **Enhancement:** Bootstraps itself, so gen-package-version itself enjoys the following fix:
 - **Fixed:** Fails to detect version number for packages fetched by dub (since they lack ```.git```).
