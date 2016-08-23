@@ -18,7 +18,12 @@ To Use:
 
 It's recommended to use [dub](http://code.dlang.org/getting_started) ([get dub here](http://code.dlang.org/download)). But if you wish, you can also forgo dub entirely (see the next section below).
 
-First, add the following to your project's [dub.json](http://code.dlang.org/getting_started):
+First, add the following to your project's [dub.sdl](http://code.dlang.org/package-format?lang=sdl) or [dub.json](http://code.dlang.org/package-format?lang=json):
+
+```
+dependency "gen-package-version" version="~>1.0.3"
+preGenerateCommands "dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"
+```
 
 ```json
 {
@@ -119,7 +124,11 @@ Using as a library
 ------------------
 Although support is very basic, gen-package-version can be used as a library instead of an executable:
 
-In your ```dub.json``` (if using DUB):
+In your ```dub.sdl``` or ```dub.json``` (if using DUB):
+```
+dependency "gen-package-version" version="~>1.0.3"
+subConfiguration "gen-package-version" "library"
+```
 ```json
 "dependencies": {
 	"gen-package-version": "~>1.0.3"
