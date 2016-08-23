@@ -1,7 +1,7 @@
 gen-package-version
 ===================
 
-**NOTE:** This project is currently broken due to [a bug in DUB](https://github.com/D-Programming-Language/dub/issues/616). A fix has been merged into DUB's master, but has yet to be included in an official release. So either use a git master build of DUB or wait for the release of DUB v0.9.25.
+**NOTE:** If using together with DUB, you need DUB v1.0.0 or later. This project doesn't work with earlier versions of DUB due to [this](https://github.com/D-Programming-Language/dub/issues/616).
 
 Automatically generate a [D](http://dlang.org) module with version and timestamp information (detected from git or Mercurial/hg) every time your program or library is built. You can also generate a DDOC macro file (using the ```--ddoc=dir``` switch.)
 
