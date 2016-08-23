@@ -3,6 +3,10 @@
 
 (Dates below are YYYY/MM/DD)
 
+v1.0.4 - 2016/08/23
+-------------------
+- **Enhancement:** Include dub.sdl samples, not just dub.json.
+
 v1.0.3 - 2015/08/17
 -------------------
 - **Fixed:** Compile error for unittest builds.

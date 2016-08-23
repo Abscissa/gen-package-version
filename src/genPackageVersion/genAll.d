@@ -27,16 +27,17 @@ from git or hg and (optionally) dub. This generated D file is automatically
 added to .gitignore/.hgignore if necessary (unless using --no-ignore-file).
 
 It is recommended to run this via DUB's preGenerateCommands by copy/pasting the
-following lines into your project's dub.sdl:
+following lines into your project's dub.sdl (make sure to edit "path/to/src"
+and "your.package.name" as needed):
 
-	dependency "gen-package-version" version="~>1.0.3"
+	dependency "gen-package-version" version="~>1.0.4"
 	preGenerateCommands \
 		"dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"
 
 Or dub.json:
 
 	"dependencies": {
-		"gen-package-version": "~>1.0.3"
+		"gen-package-version": "~>1.0.4"
 	},
 	"preGenerateCommands":
 		["dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"]
