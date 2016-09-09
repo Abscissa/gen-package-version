@@ -3,6 +3,10 @@
 
 (Dates below are YYYY/MM/DD)
 
+v1.0.5 - 2016/09/09
+-------------------
+- **Fixed:** Fix import-related deprecation messages for DMD 2.071.
+
 v1.0.4 - 2016/08/23
 -------------------
 - **Enhancement:** Include dub.sdl samples, not just dub.json.

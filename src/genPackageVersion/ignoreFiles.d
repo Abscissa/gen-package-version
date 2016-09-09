@@ -33,9 +33,11 @@ void addToIgnore(string ignoreFileName, string path, bool useRegex)
 	// Doesn't already exist? Create it.
 	if(!exists(Path(ignoreFileName)))
 	{
+		import scriptlike.file : scriptlikeWrite = write;
+		
 		logVerbose("No existing ", ignoreFileName, " file. Creating it.");
 		if(!dryRun)
-			scriptlike.file.write(ignoreFileName, path~"\n");
+			scriptlikeWrite(ignoreFileName, path~"\n");
 
 		return;
 	}

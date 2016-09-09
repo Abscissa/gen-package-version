@@ -31,6 +31,8 @@ Macros:
 `~macroPrefix~`_TIMESTAMP_ISO = `~timestampIso~`
 `;
 	
+	import scriptlike.file : scriptlikeRead = read, scriptlikeWrite = write;
+
 	// Check whether output file should be updated
 	if(force)
 		logVerbose(`--force used, skipping ddoc "up-to-date" check`);
@@ -40,7 +42,7 @@ Macros:
 		{
 			import std.regex;
 
-			auto existingDdoc = cast(string) scriptlike.file.read(Path(outPath));
+			auto existingDdoc = cast(string) scriptlikeRead(Path(outPath));
 			auto adjustedExistingDdoc = existingDdoc
 				.replaceFirst(regex(`_TIMESTAMP     = [^\n]*\n`), `_TIMESTAMP     = `~timestamp~"\n")
 				.replaceFirst(regex(`_TIMESTAMP_ISO = [^\n]*\n`), `_TIMESTAMP_ISO = `~timestampIso~"\n");
@@ -58,7 +60,7 @@ Macros:
 	if(!dryRun)
 	{
 		try
-			scriptlike.file.write(outPath, newDdoc);
+			scriptlikeWrite(outPath, newDdoc);
 		catch(FileException e)
 			fail(e.msg);
 	}

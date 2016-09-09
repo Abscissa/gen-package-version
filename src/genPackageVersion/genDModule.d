@@ -2,7 +2,6 @@
 module genPackageVersion.genDModule;
 
 import std.array;
-import std.path : buildPath, dirName;
 import scriptlike.only;
 
 import genPackageVersion.util;
@@ -45,13 +44,16 @@ enum packageTimestampISO = "`~timestampIso~`";
 	//logTrace(dModule);
 	//logTrace("--------------------------------------");
 	
+	import std.path : stdBuildPath = buildPath, stdDirName = dirName;
+	import scriptlike.file : scriptlikeRead = read, scriptlikeWrite = write;
+	
 	// Determine output filepath
 	auto packagePath = outPackageName.replace(".", dirSeparator);
-	auto outPath = buildPath(projectSourcePath, packagePath, outModuleName) ~ ".d";
+	auto outPath = stdBuildPath(projectSourcePath, packagePath, outModuleName) ~ ".d";
 	logTrace("outPath: ", outPath);
 	
 	// Ensure directory for output file exits
-	auto outDir = std.path.dirName(outPath);
+	auto outDir = stdDirName(outPath);
 	failEnforce(exists(Path(outDir)), "Output directory doesn't exist: ", outDir);
 	failEnforce(isDir(Path(outDir)), "Output directory isn't a directory: ", outDir);
 	
@@ -64,7 +66,7 @@ enum packageTimestampISO = "`~timestampIso~`";
 		{
 			import std.regex;
 
-			auto existingModule = cast(string) scriptlike.file.read(Path(outPath));
+			auto existingModule = cast(string) scriptlikeRead(Path(outPath));
 			auto adjustedExistingModule = existingModule
 				.replaceFirst(regex(`Generated at [^\n]*\n`), `Generated at `~timestamp~"\n")
 				.replaceFirst(regex(`packageTimestamp = "[^"]*";`), `packageTimestamp = "`~timestamp~`";`)
@@ -83,7 +85,7 @@ enum packageTimestampISO = "`~timestampIso~`";
 	if(!dryRun)
 	{
 		try
-			scriptlike.file.write(outPath, dModule);
+			scriptlikeWrite(outPath, dModule);
 		catch(FileException e)
 			fail(e.msg);
 	}
