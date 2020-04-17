@@ -44,7 +44,7 @@ enum packageTimestampISO = "`~timestampIso~`";
 	//logTrace(dModule);
 	//logTrace("--------------------------------------");
 	
-	import std.path : stdBuildPath = buildPath, stdDirName = dirName;
+	import std.path : stdBuildPath = buildPath, stdDirName = dirName, dirSeparator;
 	import scriptlike.file : scriptlikeRead = read, scriptlikeWrite = write;
 	
 	// Determine output filepath

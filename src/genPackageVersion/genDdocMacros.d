@@ -11,6 +11,7 @@ import genPackageVersion.util;
 string generateDdocMacros(string outDir, string packageName, string moduleName,
 	string ver, string timestamp, string timestampIso)
 {
+	import std.path : buildPath;
 	auto macroPrefix = packageName.toUpper().replace(".", "_");
 	
 	// Ensure directory for output file exits
