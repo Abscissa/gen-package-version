@@ -3,6 +3,15 @@
 
 (Dates below are YYYY/MM/DD)
 
+v1.0.6 - 2020/05/13
+-------------------
+- **Update:** [#6](https://github.com/Abscissa/gen-package-version/pull/6):
+	Updated Scriptlike dependency from v0.9.1 to v0.10.3 (@schveiguy, thanks also to @logicfish)
+- **Fixed:** [#6](https://github.com/Abscissa/gen-package-version/pull/6):
+	Fix missing imports. (@schveiguy, thanks also to @logicfish)
+- **Fixed:** [#6](https://github.com/Abscissa/gen-package-version/pull/6):
+	Fix outdated auto concatenation. (@schveiguy)
+
 v1.0.5 - 2016/09/09
 -------------------
 - **Fixed:** Fix import-related deprecation messages for DMD 2.071.

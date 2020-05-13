@@ -21,14 +21,14 @@ It's recommended to use [dub](http://code.dlang.org/getting_started) ([get dub h
 First, add the following to your project's [dub.sdl](http://code.dlang.org/package-format?lang=sdl) or [dub.json](http://code.dlang.org/package-format?lang=json):
 
 ```
-dependency "gen-package-version" version="~>1.0.4"
+dependency "gen-package-version" version="~>1.0.6"
 preGenerateCommands "dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"
 ```
 
 ```json
 {
     "dependencies": {
-        "gen-package-version": "~>1.0.4"
+        "gen-package-version": "~>1.0.6"
     },
     "preGenerateCommands":
         ["dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"]
@@ -107,7 +107,7 @@ Or download and compile with no dub needed at all:
 ```bash
 $ git clone https://github.com/Abscissa/gen-package-version.git
 $ cd gen-package-version
-$ git checkout v1.0.4  # Or newer
+$ git checkout v1.0.6  # Or newer
 
 $ git clone https://github.com/Abscissa/scriptlike.git
 $ cd scriptlike
@@ -126,12 +126,12 @@ Although support is very basic, gen-package-version can be used as a library ins
 
 In your ```dub.sdl``` or ```dub.json``` (if using DUB):
 ```
-dependency "gen-package-version" version="~>1.0.4"
+dependency "gen-package-version" version="~>1.0.6"
 subConfiguration "gen-package-version" "library"
 ```
 ```json
 "dependencies": {
-	"gen-package-version": "~>1.0.4"
+	"gen-package-version": "~>1.0.6"
 },
 "subConfigurations": {
 	"gen-package-version": "library"
@@ -163,7 +163,7 @@ Help Screen
 View this help screen with ```dub run gen-package-version -- --help``` or ```gen-package-version --help```:
 
 ```
-gen-package-version v1.0.4
+gen-package-version v1.0.6
 <https://github.com/Abscissa/gen-package-version>
 -------------------------------------------------
 Generates a D module with version information automatically-detected
@@ -174,14 +174,14 @@ It is recommended to run this via DUB's preGenerateCommands by copy/pasting the
 following lines into your project's dub.sdl (make sure to edit "path/to/src"
 and "your.package.name" as needed):
 
-    dependency "gen-package-version" version="~>1.0.4"
+    dependency "gen-package-version" version="~>1.0.6"
     preGenerateCommands \
         "dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"
 
 Or dub.json:
 
     "dependencies": {
-        "gen-package-version": "~>1.0.4"
+        "gen-package-version": "~>1.0.6"
     },
     "preGenerateCommands":
         ["dub run gen-package-version -- your.package.name --root=$PACKAGE_DIR --src=path/to/src"]
