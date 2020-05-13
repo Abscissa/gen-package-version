@@ -9,7 +9,7 @@
 	"targetName": "gen-package-version",
 	"sourcePaths": ["src"],
 	"dependencies": {
-		"scriptlike": "~>0.9.1"
+		"scriptlike": "~>0.10.3"
 	},
 	"preGenerateCommands-posix":
 		["cd $PACKAGE_DIR && rdmd helper/bootstrap.d $SCRIPTLIKE_PACKAGE_DIR"],
